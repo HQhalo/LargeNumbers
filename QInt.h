@@ -18,10 +18,10 @@ public:
     void scanQInt();
     void PrintQInt();
     
-    static string decToBin(QInt x);
-    static QInt binToDec(string x);
-    static string binToHex(string x);
-    static string decToHex(QInt x);
+    friend string decToBin(QInt x);
+    friend QInt binToDec(string x);
+    friend string binToHex(string x);
+    friend string decToHex(QInt x);
 
     QInt & operator + ( QInt const & other);
     QInt & operator - ( QInt const & other);
@@ -35,24 +35,24 @@ public:
     bool operator >= ( QInt const &other);
     bool operator == ( QInt const &other);
     
-     QInt & operator = (long long other);
-    bool operator < (long long other);
-    bool operator <= (long long other);
-    bool operator > (long long other);
-    bool operator >= (long long other);
-    bool operator == (long long other);
+     QInt & operator = (const long long &other);
+    bool operator < (const long long &other);
+    bool operator <= (const long long &other);
+    bool operator > (const long long &other);
+    bool operator >= (const long long &other);
+    bool operator == (const long long &other);
 
     QInt operator & ( QInt const &other);
     QInt operator | ( QInt const &other);
     QInt operator ^ ( QInt const &other);
     QInt operator ~ ();
 
-    QInt operator & (long long other);
-    QInt operator | (long long other);
-    QInt operator ^ (long long other);
+    QInt operator & (const long long& other);
+    QInt operator | (const long long& other);
+    QInt operator ^ (const long long& other);
 
-    QInt operator << (int n);
-    QInt operator >> (int n);
+    QInt operator << (const int &n);
+    QInt operator >> (const int &n);
     //QInt operator rol (int n);
    // QInt operator ror (int n);
     
@@ -62,6 +62,9 @@ public:
     ~QInt();
 };
 
-
+string decToBin(QInt x);
+QInt binToDec(string x);
+string binToHex(string x);
+string decToHex(QInt x);
 
 
