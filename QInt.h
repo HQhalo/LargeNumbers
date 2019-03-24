@@ -1,7 +1,14 @@
 #pragma once
 #include<string>
 #define NUMBER_BITS 128
+
 using namespace std;
+
+const hexTable[16] = {'0', '1', '2', '3',
+                      '4', '5', '6', '7',
+                      '8', '9', 'A', 'B',
+                      'C', 'D', 'E', 'F'}
+
 struct fourInts
 {
     /* data */
@@ -18,10 +25,10 @@ public:
     void scanQInt();
     void PrintQInt();
     
-    friend string decToBin(QInt x);
-    friend QInt binToDec(string x);
-    friend string binToHex(string x);
-    friend string decToHex(QInt x);
+    friend QInt decToBin(string str);
+    friend string binToDec(QInt x);
+    friend string binToHex(QInt x);
+    friend string decToHex(string x);
 
     QInt & operator + ( QInt const & other);
     QInt & operator - ( QInt const & other);
@@ -62,9 +69,9 @@ public:
     ~QInt();
 };
 
-string decToBin(QInt x);
-QInt binToDec(string x);
-string binToHex(string x);
-string decToHex(QInt x);
+QInt decToBin(string str);
+string binToDec(QInt x);
+string binToHex(QInt x);
+string decToHex(string x);
 
 
