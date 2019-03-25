@@ -25,10 +25,10 @@ public:
     void scanQInt();
     void PrintQInt();
     
-    friend QInt decToBin(string str);
-    friend string binToDec(QInt x);
-    friend string binToHex(QInt x);
-    friend string decToHex(string x);
+    static QInt decToBin(string str);
+    static string binToDec(QInt x);
+    static string binToHex(QInt x);
+    static string decToHex(string x);
 
     QInt & operator + ( QInt const & other);
     QInt & operator - ( QInt const & other);
@@ -68,10 +68,5 @@ public:
     QInt(string decNum);
     ~QInt();
 };
-
-QInt decToBin(string str);
-string binToDec(QInt x);
-string binToHex(QInt x);
-string decToHex(string x);
 
 
