@@ -4,22 +4,16 @@
 
 using namespace std;
 
-const hexTable[16] = {'0', '1', '2', '3',
+const char hexTable[16] = {'0', '1', '2', '3',
                       '4', '5', '6', '7',
                       '8', '9', 'A', 'B',
                       'C', 'D', 'E', 'F'}
-
-struct fourInts
-{
-    /* data */
-    unsigned int cell[4];
-};
 
 class QInt
 {
 private:
     /* data */
-    fourInts _number;
+    unsigned int cell[4];
     
 public:
     void scanQInt();
