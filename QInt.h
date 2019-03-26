@@ -59,8 +59,8 @@ public:
 
     QInt operator << (const int &n);
     QInt operator >> (const int &n);
-    //QInt operator rol (int n);
-   // QInt operator ror (int n);
+    QInt  rol (int n);
+    QInt  ror (int n);
     
 
     QInt(/* args */);
