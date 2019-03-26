@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+#include <vector>
 #define NUMBER_BITS 128
 
 const char hexTable[16] = {'0', '1', '2', '3',
@@ -20,6 +21,8 @@ private:
     void setBit(const unsigned char &index, const bool &value);
   
 public:
+	std::string getToken(std::string Tokens);
+
     void scanQInt();
     void PrintQInt();
     
@@ -27,6 +30,9 @@ public:
     static std::string binToDec(QInt x);
     static std::string binToHex(QInt x);
     static std::string decToHex(std::string x);
+	
+
+
 
     QInt operator + ( QInt const & other);
     QInt operator - ( QInt const & other);
