@@ -46,7 +46,7 @@ public:
     bool operator >= ( QInt const &other);
     bool operator == ( QInt const &other);
     
-     QInt & operator = (const long long &other);
+    QInt & operator = (const long long &other);
     bool operator < (const long long &other);
     bool operator <= (const long long &other);
     bool operator > (const long long &other);
