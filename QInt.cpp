@@ -1,40 +1,124 @@
 #include "QInt.h"
-
-QInt::QInt() {
-	cell[0] = cell[1] = cell[2] = cell[3] = 0;
+//////////////////////////////////////////////////////////////////////////////////////////////////////Tam's
+QInt::QInt(){
+    cell[0] = cell[1] = cell[2] = cell[3] = 0;
 }
 
-QInt::QInt(std::string a) {
-
-}
-bool QInt::getBit(const unsigned char &index) {
-	return ((cell[3 - index / 32] >> (index % 32)) & 1);
+bool QInt::getBit(const unsigned char &index){
+    return ((cell[3 - index / 32] >> (index % 32)) & 1);
 }
 
-void QInt::turnBitOn(const unsigned char &index) {
-	cell[3 - index / 32] |= 1 << (index % 32);
+void QInt::turnBitOn(const unsigned char &index){
+    cell[3 - index / 32] |= 1 << (index % 32);
 }
 
-void QInt::turnBitOff(const unsigned char &index) {
-	cell[3 - index / 32] &= !(1 << (index % 32));
+void QInt::turnBitOff(const unsigned char &index){
+    cell[3 - index / 32] &= !(1 << (index % 32));
 }
 
 void QInt::setBit(const unsigned char &index, const bool &value)
 {
-	if (value) turnBitOn(index);
-	else turnBitOff(index);
+    if (value) turnBitOn(index);
+    else turnBitOff(index);
 }
 
- QInt  QInt::operator - ()
+QInt QInt::operator - ()
 {
-	QInt temp;
-	temp.cell[0] = !cell[0];
-	temp.cell[1] = !cell[1];
-	temp.cell[2] = !cell[2];
-	temp.cell[3] = !cell[3];
-	for (int i = 3; (++temp.cell[i] == 0) && (i >= 0); i--);
-	return temp;
+    QInt temp;
+    temp.cell[0] = !cell[0];
+    temp.cell[1] = !cell[1];
+    temp.cell[2] = !cell[2];
+    temp.cell[3] = !cell[3];
+    for (int i = 3; (++temp.cell[i] == 0) && (i >= 0); i--);
+    return temp;
 }
+
+QInt::QInt(std::string line)
+{
+    cell[0] = cell[1] = cell[2] = cell[3] = 0;
+
+    bool isNegative = (line[0] == '-');
+    if (isNegative) line.erase(0, 1);
+
+    BigNum temp(line);
+    int i = 3;
+    int m = 0;
+
+    while (!temp.isEmpty())
+    {
+        cell[i] += temp.divineByTwo() << (m++);
+        if (m == 32)
+        {
+            m = 0;
+            i--;
+        }
+    }
+
+    if (isNegative) (*this) = -(*this);
+}
+
+QInt QInt::decToBin(std::string str){
+    return QInt(str);
+}
+
+std::string QInt::binToDec(QInt x)
+{
+    bool isNegative = x.getBit(127);
+    if (isNegative) x = -x;
+
+    std::string result = "0";
+    std::string temp = "1";
+
+    for (int i = 0; i < 128; i++)
+        if (x.getBit(i)) result = result + temp;
+    
+    if (isNegative) result = '-' + result;
+
+    return result;
+}
+
+std::string QInt::binToHex(QInt x)
+{
+    std::string result = "";
+
+    for (int i = 3; i >= 0; i--)
+        for (int j = 0; j < 8; j++)
+        {
+            result = BigNum::intToHex(x.cell[i] % 16) + result;
+            x.cell[i] >> 4;
+        }
+    
+    return result;
+}
+
+QInt QInt::hexToBin(const std::string &str)
+{
+    QInt temp;
+
+    int i = 3;
+    int m = 0;
+
+    for (int i = str.length() - 1; i >= 0; i--)
+    {
+        temp.cell[i] += BigNum::hexToInt(str[i]);
+        m += 4;
+        if (m == 32)
+        {
+            m = 0;
+            i--;
+        } else temp.cell[i] <<= 4;
+    }
+    
+    return temp;
+}
+
+
+std::string QInt::decToHex(std::string x)
+{
+    QInt temp(x);
+    return binToHex(x);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////end
 
 QInt QInt::operator + (QInt const & other) {
 	QInt ans = *this;
