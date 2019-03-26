@@ -11,7 +11,7 @@ private:
 public:
     static int hexToInt(const char&);
     static char intToHex(const int&);
-
+    
     BigNum operator +(BigNum);
     void doubleValue();
     bool divineByTwo();

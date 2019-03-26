@@ -1,8 +1,5 @@
 #include "BigNum.h"
 
-
- 
-
 char BigNum::intToHex(const int &x)
 {
     char result;
@@ -56,9 +53,6 @@ int BigNum::hexToInt(const char &x)
 
     return result;
 }
-
-
-
 
 bool BigNum::isEmpty(){
     return (data.length() == 0);
