@@ -34,26 +34,30 @@ void QInt::setBit(const unsigned char &index, const bool &value)
 }
 
 QInt QInt::operator + (QInt const & other) {
+	QInt ans = *this;
+
 	unsigned long long tmp = 0;
-	tmp += (*this).cell[3];
+	tmp += ans.cell[3];
 	tmp += other.cell[3];
-	cell[3] = tmp % (1 << 32);
+	ans.cell[3] = tmp % (1 << 32);
 	tmp = tmp >> 32;
 
-	tmp += (*this).cell[2];
+	tmp += ans.cell[2];
 	tmp += other.cell[2];
-	cell[2] = tmp % (1 << 32);
+	ans.cell[2] = tmp % (1 << 32);
 	tmp = tmp >> 32;
 
-	tmp += (*this).cell[1];
+	tmp += ans.cell[1];
 	tmp += other.cell[1];
-	cell[1] = tmp % (1 << 32);
+	ans.cell[1] = tmp % (1 << 32);
 	tmp = tmp >> 32;
 
-	tmp += (*this).cell[0];
+	tmp += ans.cell[0];
 	tmp += other.cell[0];
-	cell[0] = tmp % (1 << 32);
+	ans.cell[0] = tmp % (1 << 32);
 	tmp = tmp >> 32;
+
+	return ans;
 }
 
 QInt QInt::operator - (QInt const & other) {
@@ -79,6 +83,7 @@ QInt QInt::operator * (QInt const & other) {
 			pos--;
 		}
 	}
+	return ans;
 }
 QInt QInt::operator / (QInt const & other) {
 	QInt tmp = *this;
@@ -130,11 +135,6 @@ bool QInt::operator == (QInt const &other)
 
 	}
 	return true;
-}
-
-QInt::QInt()
-{
-
 }
 
 QInt::~QInt()
@@ -197,7 +197,7 @@ bool QInt::operator > (QInt const &other)
 
 QInt QInt::operator & (QInt const &other)
 {
-	QInt re;
+	QInt re = QInt();
 	for (int i = 0; i < 4; i++)
 	{
 		re.cell[i] = this->cell[i] & other.cell[i];
