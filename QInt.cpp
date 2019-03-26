@@ -375,6 +375,9 @@ std::string QInt::getToken(std::string Tokens) {
 	}
 
 	if (Token.size() == 4) {
+		QInt a;
+		QInt b;
+
 		if (Token[0] == "2") {
 
 
@@ -426,9 +429,5 @@ std::string QInt::getToken(std::string Tokens) {
 
 
 		}
-	}
-
-
-
 	}
 }
