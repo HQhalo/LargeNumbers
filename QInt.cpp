@@ -124,17 +124,19 @@ QInt QInt::operator / (QInt const & other) {
 
 
 
-bool QInt::operator == (QInt const &other)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		if (this->cell[i] != other.cell[i])
-		{
-			return false;
-		}
 
-	}
-	return true;
+bool QInt::operator == ( QInt const &other)
+{
+    for(int i=0;i<4;i++)
+    {
+        if(this->cell[i]!=other.cell[i])
+        {
+            return false;
+        }
+
+    }
+    return true;
+
 }
 
 QInt::~QInt()
@@ -307,30 +309,49 @@ QInt& QInt::operator = (const long long& other)
 
 QInt QInt::operator << (const int &n)
 {
-	for (unsigned char i = 127; i >= n; i--)
-	{
-		if (getBit(i - n))
-			turnBitOn(i);
-		else
-			turnBitOff(i);
-	}
-	for (unsigned char i = 0; i < n; i++)
-	{
-		turnBitOff(i);
-	}
+
+    QInt temp = *this;
+    
+    for( unsigned char i = 127 ; i >= n ; i--)
+    {
+        if(temp.getBit(i-n))
+            temp.turnBitOn(i);
+        else 
+            temp.turnBitOff(i);
+    }
+    for(unsigned char i=0;i<n;i++)
+    {
+        temp.turnBitOff(i);
+    }
+    return temp;
+
 }
 
 QInt QInt::operator >> (const int &n)
 {
-	for (unsigned char i = 0; i < 128 - n; i++)
-	{
-		if (getBit(i + n))
-			turnBitOn(i);
-		else
-			turnBitOff(i);
-	}
-	for (unsigned char i = 128 - i; i < 128; i++)
-	{
-		turnBitOff(i);
-	}
+
+    QInt temp= *this;
+    for( unsigned char i = 0 ; i < 128-n ; i++)
+    {
+        if(temp.getBit(i+n))
+            temp.turnBitOn(i);
+        else 
+            temp.turnBitOff(i);
+    }
+    for(unsigned char i=128 - n ; i < 128 ;i++)
+    {
+        temp.turnBitOff(i);
+    }
+    return temp;
 }
+
+QInt QInt::rol (int n)
+{
+    return *this << n | *this >> (128 -n);
+}
+
+QInt QInt::ror (int n)
+{
+   return *this >> n | *this << (128-n);
+}
+
