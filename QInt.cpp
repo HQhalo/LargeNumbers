@@ -1,8 +1,37 @@
-#include"QInt.h"
+#include "QInt.h"
 
+QInt::QInt(){
+    cell[0] = cell[1] = cell[2] = cell[3] = 0;
+}
 
+bool QInt::getBit(const unsigned char &index){
+    return ((cell[3 - index / 32] >> (index % 32)) & 1);
+}
 
-QInt & operator + ( QInt const & other){
+void QInt::turnBitOn(const unsigned char &index){
+    cell[3 - index / 32] |= 1 << (index % 32);
+}
+
+void QInt::turnBitOff(const unsigned char &index){
+    cell[3 - index / 32] &= !(1 << (index % 32));
+}
+
+void QInt::setBit(const unsigned char &index, const bool &value)
+{
+    if (value) turnBitOn(index);
+    else turnBitOff(index);
+}
+
+QInt QInt::operator - ()
+{
+    cell[0] = !cell[0];
+    cell[1] = !cell[1];
+    cell[2] = !cell[2];
+    cell[3] = !cell[3];
+    for (int i = 3; (++cell[i] == 0) && (i >= 0); i--);
+}
+
+QInt operator + ( QInt const & other){
 	unsigned long long tmp = 0;
 	tmp += *this.cell[3];
 	tmp += other.cell[3];
@@ -25,12 +54,12 @@ QInt & operator + ( QInt const & other){
 	tmp = tmp >> 32;
 }
 
-QInt & operator - ( QInt const & other){
+QInt operator - ( QInt const & other){
 	QInt tmp = - other;
 	return *this + other;
 }
 
-QInt & operator * ( QInt const & other){
+QInt operator * ( QInt const & other){
 	QInt ans;
 	for (int i = 3; i >= 0; i--)
 		unsigned long long tmp = 0;
@@ -46,7 +75,7 @@ QInt & operator * ( QInt const & other){
 			pos--;
 		}
 }
-QInt & operator / ( QInt const & other){
+QInt operator / ( QInt const & other){
 	QInt tmp = *this;
 
 	QInt de;

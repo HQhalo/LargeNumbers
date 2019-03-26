@@ -12,7 +12,13 @@ class QInt
 private:
     /* data */
     unsigned int cell[4];
-    
+
+private:
+    bool getBit(const unsigned char &index);
+    void turnBitOn(const unsigned char &index);
+    void turnBitOff(const unsigned char &index);
+    void setBit(const unsigned char &index, const bool &value);
+  
 public:
     void scanQInt();
     void PrintQInt();
@@ -22,10 +28,11 @@ public:
     static std::string binToHex(QInt x);
     static std::string decToHex(std::string x);
 
-    QInt & operator + ( QInt const & other);
-    QInt & operator - ( QInt const & other);
-    QInt & operator * ( QInt const & other);
-    QInt & operator / ( QInt const & other);
+    QInt operator + ( QInt const & other);
+    QInt operator - ( QInt const & other);
+    QInt operator -();  
+    QInt operator * ( QInt const & other);
+    QInt operator / ( QInt const & other);
 
     QInt & operator = ( QInt const &other);
     bool operator < ( QInt const &other);
