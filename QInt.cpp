@@ -1,109 +1,117 @@
 #include "QInt.h"
 
-QInt::QInt(){
-    cell[0] = cell[1] = cell[2] = cell[3] = 0;
+QInt::QInt() {
+	cell[0] = cell[1] = cell[2] = cell[3] = 0;
 }
 
-bool QInt::getBit(const unsigned char &index){
-    return ((cell[3 - index / 32] >> (index % 32)) & 1);
+bool QInt::getBit(const unsigned char &index) {
+	return ((cell[3 - index / 32] >> (index % 32)) & 1);
 }
 
-void QInt::turnBitOn(const unsigned char &index){
-    cell[3 - index / 32] |= 1 << (index % 32);
+void QInt::turnBitOn(const unsigned char &index) {
+	cell[3 - index / 32] |= 1 << (index % 32);
 }
 
-void QInt::turnBitOff(const unsigned char &index){
-    cell[3 - index / 32] &= !(1 << (index % 32));
+void QInt::turnBitOff(const unsigned char &index) {
+	cell[3 - index / 32] &= !(1 << (index % 32));
 }
 
 void QInt::setBit(const unsigned char &index, const bool &value)
 {
-    if (value) turnBitOn(index);
-    else turnBitOff(index);
+	if (value) turnBitOn(index);
+	else turnBitOff(index);
 }
 
-QInt QInt::operator - ()
+ QInt const QInt::operator - ()
 {
-    cell[0] = !cell[0];
-    cell[1] = !cell[1];
-    cell[2] = !cell[2];
-    cell[3] = !cell[3];
-    for (int i = 3; (++cell[i] == 0) && (i >= 0); i--);
+	QInt temp;
+	temp.cell[0] = !cell[0];
+	temp.cell[1] = !cell[1];
+	temp.cell[2] = !cell[2];
+	temp.cell[3] = !cell[3];
+	for (int i = 3; (++temp.cell[i] == 0) && (i >= 0); i--);
+	return temp;
 }
 
-QInt operator + ( QInt const & other){
+QInt QInt::operator + (QInt const & other) {
 	unsigned long long tmp = 0;
-	tmp += *this.cell[3];
+	tmp += (*this).cell[3];
 	tmp += other.cell[3];
 	cell[3] = tmp % (1 << 32);
 	tmp = tmp >> 32;
 
-	tmp += *this.cell[2];
+	tmp += (*this).cell[2];
 	tmp += other.cell[2];
 	cell[2] = tmp % (1 << 32);
 	tmp = tmp >> 32;
 
-	tmp += *this.cell[1];
+	tmp += (*this).cell[1];
 	tmp += other.cell[1];
 	cell[1] = tmp % (1 << 32);
 	tmp = tmp >> 32;
 
-	tmp += *this.cell[0];
+	tmp += (*this).cell[0];
 	tmp += other.cell[0];
 	cell[0] = tmp % (1 << 32);
 	tmp = tmp >> 32;
 }
 
-QInt operator - ( QInt const & other){
-	QInt tmp = - other;
-	return *this + other;
+QInt QInt::operator - (QInt const & other) {
+
+	QInt tmp = other;
+	tmp = -tmp;
+	return (*this) + other;
 }
 
-QInt operator * ( QInt const & other){
+QInt QInt::operator * (QInt const & other) {
 	QInt ans;
-	for (int i = 3; i >= 0; i--)
+	for (int i = 3; i >= 0; i--) {
 		unsigned long long tmp = 0;
 		int pos = i;
-		for (int j = 3; j >= 0; j--){
+		for (int j = 3; j >= 0; j--) {
 			if (pos < 0)
 				break;
 
-			tmp += unsigned long long (cell[i]) * cell[j] + ans.cell[i];
-			ans.cell[i] = tmp % (1 <<32);
+			tmp += unsigned long long(cell[i]) * cell[j] + ans.cell[i];
+			ans.cell[i] = tmp % (1 << 32);
 			tmp >> 32;
 
 			pos--;
 		}
+	}
 }
-QInt operator / ( QInt const & other){
+QInt QInt::operator / (QInt const & other) {
 	QInt tmp = *this;
 
 	QInt de;
-	if (other > de) 
-		de = -other;
-	else 
+	QInt temp2 = other;
+	if (temp2 > de) {
+		de = other;
+		de = -de;
+	}
+	else
 		de = other;
 
-	QInt zero ,num ;
+	QInt zero, num;
 
 
-	if (* < 0)
-		num = ("-1");
+	if (*this < 0)
+		num = QInt("-1");
 
-	for (int i = 0; i < 128; i++){
+	for (int i = 0; i < 128; i++) {
 		int bit_left = getBit(127);
 		tmp << 1;
 		num << 1;
-		num.setBit(0 , bit_left);
+		num.setBit(0, bit_left);
 
 
 		num = num + de;
-		if (num < zero){
+		if (num < zero) {
 			tmp.setBit(0, 0);
 			num = num - de;
 		}
-			else 
-		tmp.setBit(0, 1);
+		else
+			tmp.setBit(0, 1);
 	}
 	return tmp;
 
@@ -111,17 +119,17 @@ QInt operator / ( QInt const & other){
 
 
 
-bool QInt::operator == ( QInt const &other)
+bool QInt::operator == (QInt const &other)
 {
-    for(int i=0;i<4;i++)
-    {
-        if(this->cell[i]!=other.cell[i])
-        {
-            return false;
-        }
+	for (int i = 0; i < 4; i++)
+	{
+		if (this->cell[i] != other.cell[i])
+		{
+			return false;
+		}
 
-    }
-    return true;
+	}
+	return true;
 }
 
 QInt::QInt()
@@ -131,197 +139,198 @@ QInt::QInt()
 
 QInt::~QInt()
 {
-    
-}
-
-bool QInt::operator < ( QInt const &other)
-{
-    int sign1= (cell[0] << 31) & 1;
-    int sign2= (other.cell[0] << 31) & 1;
-
-    if(sign1 == 0)
-    { 
-        if(sign2 == 1)
-        {   
-            return false;
-        }
-        for(int i =0 ; i < 4; i ++)
-        {
-            if(cell[i] < other.cell[i])
-                return true;
-        }
-        return false;
-    }
-    if(sign1 == 1)
-    {
-        if(sign2 == 0)
-        {
-            return true;
-        }
-
-        QInt temp = - *this;
-        QInt temp2 = - other;
-       
-        for(int i =0 ; i < 4; i ++)
-        {
-            if(temp.cell[i] > temp2.cell[i])
-                return true;
-        }
-        return false;
-    }
 
 }
-bool QInt::operator >= ( QInt const &other)
+
+bool QInt::operator < (QInt const &other)
 {
-    return !(*this < other);
+	int sign1 = (cell[0] << 31) & 1;
+	int sign2 = (other.cell[0] << 31) & 1;
+
+	if (sign1 == 0)
+	{
+		if (sign2 == 1)
+		{
+			return false;
+		}
+		for (int i = 0; i < 4; i++)
+		{
+			if (cell[i] < other.cell[i])
+				return true;
+		}
+		return false;
+	}
+	if (sign1 == 1)
+	{
+		if (sign2 == 0)
+		{
+			return true;
+		}
+
+		QInt temp = -*this;
+		QInt temp2 = other;
+		temp2 = -temp;
+
+		for (int i = 0; i < 4; i++)
+		{
+			if (temp.cell[i] > temp2.cell[i])
+				return true;
+		}
+		return false;
+	}
+
 }
-bool QInt::operator <= ( QInt const &other)
+bool QInt::operator >= (QInt const &other)
 {
-    return (*this < other) || (*this == other);
+	return !(*this < other);
 }
-bool QInt::operator > ( QInt const &other)
+bool QInt::operator <= (QInt const &other)
 {
-    return ! (*this <= other);
+	return (*this < other) || (*this == other);
 }
-
-
-
-QInt QInt::operator & ( QInt const &other)
+bool QInt::operator > (QInt const &other)
 {
-    QInt re;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        re.cell[i]= this->cell[i] & other.cell[i];
-    }
-
-    return re;
+	return !(*this <= other);
 }
 
 
-QInt QInt::operator | ( QInt const &other)
-{
-    QInt re;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        re.cell[i]= this->cell[i] | other.cell[i];
-    }
 
-    return re;
+QInt QInt::operator & (QInt const &other)
+{
+	QInt re;
+	for (int i = 0; i < 4; i++)
+	{
+		re.cell[i] = this->cell[i] & other.cell[i];
+	}
+
+	return re;
 }
 
 
-QInt QInt::operator ^ ( QInt const &other)
+QInt QInt::operator | (QInt const &other)
 {
-    QInt re;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        re.cell[i]= this->cell[i] ^ other.cell[i];
-    }
+	QInt re;
+	for (int i = 0; i < 4; i++)
+	{
+		re.cell[i] = this->cell[i] | other.cell[i];
+	}
 
-    return re;
+	return re;
 }
 
 
-QInt QInt::operator ~ ( )
+QInt QInt::operator ^ (QInt const &other)
 {
-    QInt re;
-    for(int i = 0 ; i < 4 ; i++)
-    {
-        re.cell[i]= ~ this->cell[i] ;
-    }
+	QInt re;
+	for (int i = 0; i < 4; i++)
+	{
+		re.cell[i] = this->cell[i] ^ other.cell[i];
+	}
 
-    return re;
+	return re;
+}
+
+
+QInt QInt::operator ~ ()
+{
+	QInt re;
+	for (int i = 0; i < 4; i++)
+	{
+		re.cell[i] = ~this->cell[i];
+	}
+
+	return re;
 }
 
 bool QInt::operator == (const long long & other)
 {
-    QInt temp(std::to_string(other));
+	QInt temp(std::to_string(other));
 
-    return *this  == temp;  
+	return *this == temp;
 }
 
 bool QInt::operator < (const long long & other)
 {
-    QInt temp(std::to_string(other));
+	QInt temp(std::to_string(other));
 
-    return *this  < temp;  
+	return *this < temp;
 }
 bool QInt::operator >= (const long long & other)
 {
-    QInt temp(std::to_string(other));
-    return *this >= temp;
+	QInt temp(std::to_string(other));
+	return *this >= temp;
 }
 bool QInt::operator > (const long long & other)
 {
-    QInt temp(std::to_string(other));
+	QInt temp(std::to_string(other));
 
-    return *this  > temp;  
+	return *this > temp;
 }
 
 bool QInt::operator <= (const long long & other)
 {
-    QInt temp(std::to_string(other));
+	QInt temp(std::to_string(other));
 
-    return *this  <= temp;  
+	return *this <= temp;
 }
 
 QInt QInt::operator & (const long long& other)
 {
-    QInt temp(std::to_string(other));
+	QInt temp(std::to_string(other));
 
-    return *this & temp;
+	return *this & temp;
 }
 
 QInt QInt::operator | (const long long& other)
 {
-    QInt temp(std::to_string(other));
+	QInt temp(std::to_string(other));
 
-    return *this | temp;
+	return *this | temp;
 }
 
 QInt QInt::operator ^ (const long long& other)
 {
-    QInt temp(std::to_string(other));
+	QInt temp(std::to_string(other));
 
-    return *this ^ temp;
+	return *this ^ temp;
 }
 
 QInt& QInt::operator = (const long long& other)
 {
-    QInt temp(std::to_string(other));
-    for(int i=0 ;i < 4; i++)
-    {
-        this->cell[i] = temp.cell[i];
-    }
-    return *this;
+	QInt temp(std::to_string(other));
+	for (int i = 0; i < 4; i++)
+	{
+		this->cell[i] = temp.cell[i];
+	}
+	return *this;
 }
 
 QInt QInt::operator << (const int &n)
 {
-    for( unsigned char i = 127 ; i >= n ; i--)
-    {
-        if(getBit(i-n))
-            turnBitOn(i);
-        else 
-            turnBitOff(i);
-    }
-    for(unsigned char i=0;i<n;i++)
-    {
-        turnBitOff(i);
-    }
+	for (unsigned char i = 127; i >= n; i--)
+	{
+		if (getBit(i - n))
+			turnBitOn(i);
+		else
+			turnBitOff(i);
+	}
+	for (unsigned char i = 0; i < n; i++)
+	{
+		turnBitOff(i);
+	}
 }
 
 QInt QInt::operator >> (const int &n)
 {
-    for( unsigned char i = 0 ; i < 128-n ; i++)
-    {
-        if(getBit(i+n))
-            turnBitOn(i);
-        else 
-            turnBitOff(i);
-    }
-    for(unsigned char i=128 - i ; i < 128 ;i++)
-    {
-        turnBitOff(i);
-    }
+	for (unsigned char i = 0; i < 128 - n; i++)
+	{
+		if (getBit(i + n))
+			turnBitOn(i);
+		else
+			turnBitOff(i);
+	}
+	for (unsigned char i = 128 - i; i < 128; i++)
+	{
+		turnBitOff(i);
+	}
 }
