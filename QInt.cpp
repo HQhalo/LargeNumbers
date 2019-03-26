@@ -105,7 +105,7 @@ QInt::~QInt()
     
 }
 
-bool QInt::operator< ( QInt const &other)
+bool QInt::operator < ( QInt const &other)
 {
     int sign1= (cell[0] << 31) & 1;
     int sign2= (other.cell[0] << 31) & 1;
@@ -269,8 +269,30 @@ QInt& QInt::operator = (const long long& other)
 
 QInt QInt::operator << (const int &n)
 {
-    for( int i = 0 ; i < 128 - n ; i++)
+    for( int i = 127 ; i >= n ; i--)
     {
-        this->cell[i]
+        if(getBit(i-n))
+            turnBitOn(i);
+        else 
+            turnBitOff(i);
+    }
+    for(int i=0;i<n;i++)
+    {
+        turnBitOff(i);
+    }
+}
+
+QInt QInt::operator >> (const int &n)
+{
+    for( int i = 0 ; i < 128-n ; i++)
+    {
+        if(getBit(i+n))
+            turnBitOn(i);
+        else 
+            turnBitOff(i);
+    }
+    for(int i=128 - i ; i < 128 ;i++)
+    {
+        turnBitOff(i);
     }
 }
