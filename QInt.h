@@ -2,8 +2,6 @@
 #include<string>
 #define NUMBER_BITS 128
 
-using namespace std;
-
 const char hexTable[16] = {'0', '1', '2', '3',
                       '4', '5', '6', '7',
                       '8', '9', 'A', 'B',
@@ -19,10 +17,10 @@ public:
     void scanQInt();
     void PrintQInt();
     
-    static QInt decToBin(string str);
-    static string binToDec(QInt x);
-    static string binToHex(QInt x);
-    static string decToHex(string x);
+    static QInt decToBin(std::string str);
+    static std::string binToDec(QInt x);
+    static std::string binToHex(QInt x);
+    static std::string decToHex(std::string x);
 
     QInt & operator + ( QInt const & other);
     QInt & operator - ( QInt const & other);
@@ -59,7 +57,7 @@ public:
     
 
     QInt(/* args */);
-    QInt(string decNum);
+    QInt(std::string decNum);
     ~QInt();
 };
 
