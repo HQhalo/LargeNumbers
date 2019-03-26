@@ -2,6 +2,7 @@
 #include<string>
 #include <vector>
 #define NUMBER_BITS 128
+#include "BigNum.h"
 
 const char hexTable[16] = {'0', '1', '2', '3',
                       '4', '5', '6', '7',
@@ -15,11 +16,12 @@ private:
     unsigned int cell[4];
   
 public:
-	std::string getToken(std::string Tokens);
+	static std::string getToken(std::string Tokens);
     void scanQInt();
     void PrintQInt();
 
 public:
+
     static QInt decToBin(std::string str);
     static std::string binToDec(QInt x);
     static std::string binToHex(QInt x);
