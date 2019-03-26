@@ -358,3 +358,77 @@ QInt QInt::ror (int n)
    return *this >> n | *this << (128-n);
 }
 
+std::string QInt::getToken(std::string Tokens) {
+	std::vector<std::string> Token;
+
+	std::string tmp = 0;
+	for (int i = 0; i < Tokens.size(); i++) {
+		if (Tokens[i] == ' ')
+			continue;
+
+		tmp += Tokens[i];
+
+		if (i == Tokens.size() - 1 || Tokens[i + 1] == '=') {
+			Token.push_back(tmp);
+			tmp = "";
+		}
+	}
+
+	if (Token.size() == 4) {
+		if (Token[0] == "2") {
+
+
+
+		}
+		if (Token[0] == "10") {
+
+
+
+		}
+		if (Token[0] == "16") {
+
+
+
+		}
+
+		if (Token[2] == "+") {
+
+
+
+		}
+		if (Token[2] == "-") {
+
+
+
+		}
+		if (Token[2] == "*") {
+
+
+
+		}
+		if (Token[2] == "/") {
+
+
+
+		}
+		if (Token[2] == "&") {
+
+
+
+		}
+		if (Token[2] == "|") {
+
+
+
+		}
+		if (Token[2] == "^") {
+
+
+
+		}
+	}
+
+
+
+	}
+}
