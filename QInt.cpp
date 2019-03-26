@@ -4,6 +4,9 @@ QInt::QInt() {
 	cell[0] = cell[1] = cell[2] = cell[3] = 0;
 }
 
+QInt::QInt(std::string a) {
+
+}
 bool QInt::getBit(const unsigned char &index) {
 	return ((cell[3 - index / 32] >> (index % 32)) & 1);
 }
@@ -22,7 +25,7 @@ void QInt::setBit(const unsigned char &index, const bool &value)
 	else turnBitOff(index);
 }
 
- QInt const QInt::operator - ()
+ QInt  QInt::operator - ()
 {
 	QInt temp;
 	temp.cell[0] = !cell[0];
