@@ -30,7 +30,7 @@ public:
 
     QInt operator + ( QInt const & other);
     QInt operator - ( QInt const & other);
-    QInt operator -();  
+	QInt const operator -();
     QInt operator * ( QInt const & other);
     QInt operator / ( QInt const & other);
 
