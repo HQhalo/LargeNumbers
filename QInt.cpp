@@ -269,14 +269,14 @@ QInt& QInt::operator = (const long long& other)
 
 QInt QInt::operator << (const int &n)
 {
-    for( int i = 127 ; i >= n ; i--)
+    for( unsigned char i = 127 ; i >= n ; i--)
     {
         if(getBit(i-n))
             turnBitOn(i);
         else 
             turnBitOff(i);
     }
-    for(int i=0;i<n;i++)
+    for(unsigned char i=0;i<n;i++)
     {
         turnBitOff(i);
     }
@@ -284,14 +284,14 @@ QInt QInt::operator << (const int &n)
 
 QInt QInt::operator >> (const int &n)
 {
-    for( int i = 0 ; i < 128-n ; i++)
+    for( unsigned char i = 0 ; i < 128-n ; i++)
     {
         if(getBit(i+n))
             turnBitOn(i);
         else 
             turnBitOff(i);
     }
-    for(int i=128 - i ; i < 128 ;i++)
+    for(unsigned char i=128 - i ; i < 128 ;i++)
     {
         turnBitOff(i);
     }
