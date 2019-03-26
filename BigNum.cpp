@@ -112,9 +112,8 @@ bool BigNum::divineByTwo()
 
     for (int i = 0; i < n; i++)
     {
-        value = data[i] + temp - 48 * 10;
+        value = data[i]- 48 + temp  * 10;
         temp = (value & 1);
-
         data[i] = char((value >> 1) + 48);
     }
 
