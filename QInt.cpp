@@ -62,19 +62,19 @@ QInt & operator / ( QInt const & other){
 		num = ("-1");
 
 	for (int i = 0; i < 128; i++){
-		int bit_left = getbit(127);
+		int bit_left = getBit(127);
 		tmp << 1;
 		num << 1;
-		num.setbit(0 , bit_left);
+		num.setBit(0 , bit_left);
 
 
 		num = num + de;
 		if (num < zero){
-			tmp.setbit(0, 0);
+			tmp.setBit(0, 0);
 			num = num - de;
 		}
 			else 
-		tmp.setbit(0, 1);
+		tmp.setBit(0, 1);
 	}
 	return tmp;
 
