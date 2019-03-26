@@ -13,7 +13,7 @@ void QInt::turnBitOn(const unsigned char &index){
 }
 
 void QInt::turnBitOff(const unsigned char &index){
-    cell[3 - index / 32] &= !(1 << (index % 32));
+    cell[3 - index / 32] &= ~(unsigned int (1) << (index % 32));
 }
 
 void QInt::setBit(const unsigned char &index, const bool &value)
@@ -24,11 +24,11 @@ void QInt::setBit(const unsigned char &index, const bool &value)
 
 QInt QInt::operator - ()
 {
-    QInt temp;
-    temp.cell[0] = !cell[0];
-    temp.cell[1] = !cell[1];
-    temp.cell[2] = !cell[2];
-    temp.cell[3] = !cell[3];
+    QInt temp = (*this);
+    temp.cell[0] = ~cell[0];
+    temp.cell[1] = ~cell[1];
+    temp.cell[2] = ~cell[2];
+    temp.cell[3] = ~cell[3];
     for (int i = 3; (++temp.cell[i] == 0) && (i >= 0); i--);
     return temp;
 }
@@ -73,7 +73,6 @@ std::string QInt::binToDec(QInt x)
         if (x.getBit(i)) result = result + temp;
     
     if (isNegative) result = '-' + result;
-
     return result;
 }
 
@@ -126,22 +125,22 @@ QInt QInt::operator + (QInt const & other) {
 	unsigned long long tmp = 0;
 	tmp += ans.cell[3];
 	tmp += other.cell[3];
-	ans.cell[3] = tmp % (1 << 32);
+	ans.cell[3] = tmp % (unsigned long long(1) << 32);
 	tmp = tmp >> 32;
 
 	tmp += ans.cell[2];
 	tmp += other.cell[2];
-	ans.cell[2] = tmp % (1 << 32);
+	ans.cell[2] = tmp % (unsigned long long(1) << 32);
 	tmp = tmp >> 32;
 
 	tmp += ans.cell[1];
 	tmp += other.cell[1];
-	ans.cell[1] = tmp % (1 << 32);
+	ans.cell[1] = tmp % (unsigned long long(1) << 32);
 	tmp = tmp >> 32;
 
 	tmp += ans.cell[0];
 	tmp += other.cell[0];
-	ans.cell[0] = tmp % (1 << 32);
+	ans.cell[0] = tmp % (unsigned long long(1) << 32);
 	tmp = tmp >> 32;
 
 	return ans;
@@ -151,11 +150,12 @@ QInt QInt::operator - (QInt const & other) {
 
 	QInt tmp = other;
 	tmp = -tmp;
-	return (*this) + other;
+	return (*this) + tmp;
 }
 
 QInt QInt::operator * (QInt const & other) {
 	QInt ans;
+	QInt other1 = other;
 	for (int i = 3; i >= 0; i--) {
 		unsigned long long tmp = 0;
 		int pos = i;
@@ -163,9 +163,9 @@ QInt QInt::operator * (QInt const & other) {
 			if (pos < 0)
 				break;
 
-			tmp += unsigned long long(cell[i]) * cell[j] + ans.cell[i];
-			ans.cell[i] = tmp % (1 << 32);
-			tmp >> 32;
+			tmp += unsigned long long(cell[i]) * other1.cell[j] + ans.cell[pos];
+			ans.cell[pos] = tmp % (unsigned long long(1) << 32);
+			tmp = tmp >> 32;
 
 			pos--;
 		}
@@ -187,23 +187,28 @@ QInt QInt::operator / (QInt const & other) {
 	QInt zero, num;
 
 
-	if (*this < 0)
+	if ((*this) < zero)
 		num = QInt("-1");
+	
 
 	for (int i = 0; i < 128; i++) {
-		int bit_left = getBit(127);
-		tmp << 1;
-		num << 1;
+		int bit_left = tmp.getBit(127);
+		tmp = tmp << 1;
+		num = num << 1;
 		num.setBit(0, bit_left);
 
 
 		num = num + de;
+		
+		
 		if (num < zero) {
 			tmp.setBit(0, 0);
 			num = num - de;
+			
 		}
 		else
 			tmp.setBit(0, 1);
+
 	}
 	return tmp;
 
@@ -233,8 +238,9 @@ QInt::~QInt()
 
 bool QInt::operator < (QInt const &other)
 {
-	int sign1 = (cell[0] << 31) & 1;
-	int sign2 = (other.cell[0] << 31) & 1;
+	int sign1 = (cell[0] >> 31) & 1;
+	int sign2 = (other.cell[0] >> 31) & 1;
+
 
 	if (sign1 == 0)
 	{
@@ -246,6 +252,9 @@ bool QInt::operator < (QInt const &other)
 		{
 			if (cell[i] < other.cell[i])
 				return true;
+			if (cell[i] > other.cell[i])
+				return false;
+
 		}
 		return false;
 	}
@@ -258,16 +267,19 @@ bool QInt::operator < (QInt const &other)
 
 		QInt temp = -*this;
 		QInt temp2 = other;
-		temp2 = -temp;
+		temp2 = -temp2;
 
 		for (int i = 0; i < 4; i++)
 		{
 			if (temp.cell[i] > temp2.cell[i])
 				return true;
+			if (temp.cell[i] < temp2.cell[i])
+				return false;
 		}
 		return false;
 	}
 
+	
 }
 bool QInt::operator >= (QInt const &other)
 {
@@ -445,18 +457,19 @@ QInt QInt::ror (int n)
 std::string QInt::getToken(std::string Tokens) {
 	std::vector<std::string> Token;
 
-	std::string tmp = 0;
+	std::string tmp = "";
 	for (int i = 0; i < Tokens.size(); i++) {
 		if (Tokens[i] == ' ')
 			continue;
 
 		tmp += Tokens[i];
 
-		if (i == Tokens.size() - 1 || Tokens[i + 1] == '=') {
+		if (i == Tokens.size() - 1 || Tokens[i + 1] == ' ') {
 			Token.push_back(tmp);
 			tmp = "";
 		}
 	}
+	
 
 	if (Token.size() == 4) {
 		QInt a;
@@ -469,8 +482,8 @@ std::string QInt::getToken(std::string Tokens) {
 		}
 		if (Token[0] == "10") {
 
-
-
+			a = decToBin(Token[1]);
+			b = decToBin(Token[3]);
 		}
 		if (Token[0] == "16") {
 
@@ -479,39 +492,80 @@ std::string QInt::getToken(std::string Tokens) {
 		}
 
 		if (Token[2] == "+") {
-
+			a = a + b;
 
 
 		}
 		if (Token[2] == "-") {
-
+			a = a - b;
 
 
 		}
 		if (Token[2] == "*") {
-
+			a = a * b;
 
 
 		}
 		if (Token[2] == "/") {
-
+			a = a / b;
 
 
 		}
 		if (Token[2] == "&") {
-
+			a = a & b;
 
 
 		}
 		if (Token[2] == "|") {
-
+			a = a | b;
 
 
 		}
 		if (Token[2] == "^") {
+			a = a ^ b;
+
+
+		}
+
+		if (Token[0] == "2") {
 
 
 
 		}
+		if (Token[0] == "10") {
+
+			
+		}
+		if (Token[0] == "16") {
+
+
+
+		}
+
+
+		a.PrintQInt();
+
 	}
+
+	return "chua co kq";
+}
+
+
+void QInt::PrintQInt() {
+	QInt tmp = *this;
+	bool isNegative = false;
+	if (getBit(127)) {
+		tmp = -tmp;
+		isNegative = true;
+	}
+	std::string present = "";
+	for (int i = 127; i >= 0; i--)
+	{
+		present += ('0' + tmp.getBit(i));
+	}
+	while (present.size() != 1 && present[0] == '0')
+		present.erase(0, 1);
+	if (isNegative)
+		present = "-" + present;
+	std::cout << present;
 }
