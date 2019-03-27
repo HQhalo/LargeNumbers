@@ -66,14 +66,17 @@ std::string QInt::binToDec(QInt x)
     bool isNegative = x.getBit(127);
     if (isNegative) x = -x;
 
-    std::string result = "0";
-    std::string temp = "1";
-
+    BigNum result("0");
+	BigNum temp("1");
+	
     for (int i = 0; i < 128; i++)
-        if (x.getBit(i)) result = result + temp;
+    {
+	    if (x.getBit(i)) result = result + temp;
+		temp.doubleValue();
+    }
     
-    if (isNegative) result = '-' + result;
-    return result;
+    if (isNegative) result.data = '-' + result.data;
+    return result.data;
 }
 
 std::string QInt::binToHex(QInt x)
