@@ -170,8 +170,9 @@ bool QInt::operator < (QInt const &other)
 		}
 
 		QInt temp = -*this;
-		QInt temp2 = - other;
-		
+		QInt temp2 = other;
+		temp2 = -temp;
+
 		for (int i = 0; i < 4; i++)
 		{
 			if (temp.cell[i] > temp2.cell[i])
