@@ -503,39 +503,41 @@ std::string QInt::getToken(std::string Tokens) {
 
 		if (Token[2] == "+") {
 			a = a + b;
-
-
 		}
 		if (Token[2] == "-") {
 			a = a - b;
-
-
 		}
 		if (Token[2] == "*") {
 			a = a * b;
-
-
 		}
 		if (Token[2] == "/") {
 			a = a / b;
-
-
 		}
 		if (Token[2] == "&") {
 			a = a & b;
-
-
 		}
 		if (Token[2] == "|") {
 			a = a | b;
-
-
 		}
 		if (Token[2] == "^") {
 			a = a ^ b;
-
-
 		}
+		if (Token[2] == "<") {
+			return a < b ? "True" : "False";
+		}
+		if (Token[2] == ">") {
+			return a > b ? "True" : "False";
+		}
+		if (Token[2] == "=") {
+			return a == b ? "True" : "False";
+		}
+		if (Token[2] == ">=") {
+			return a >= b ? "True" : "False";
+		}
+		if (Token[2] == "<=") {
+			return a <= b ? "True" : "False";
+		}
+
 
 		if (Token[0] == "2") {
 
@@ -543,8 +545,7 @@ std::string QInt::getToken(std::string Tokens) {
 
 		}
 		if (Token[0] == "10") {
-
-			
+			return binToDec(a);
 		}
 		if (Token[0] == "16") {
 
