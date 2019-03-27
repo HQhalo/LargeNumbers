@@ -13,7 +13,7 @@ void QInt::turnBitOn(const unsigned char &index){
 }
 
 void QInt::turnBitOff(const unsigned char &index){
-    cell[3 - index / 32] &= ~(unsigned int (1) << (index % 32));
+    cell[3 - index / 32] &= ~((unsigned int) (1) << (index % 32));
 }
 
 void QInt::setBit(const unsigned char &index, const bool &value)
@@ -125,22 +125,22 @@ QInt QInt::operator + (QInt const & other) {
 	unsigned long long tmp = 0;
 	tmp += ans.cell[3];
 	tmp += other.cell[3];
-	ans.cell[3] = tmp % (unsigned long long(1) << 32);
+	ans.cell[3] = tmp % ((unsigned long long)(1) << 32);
 	tmp = tmp >> 32;
 
 	tmp += ans.cell[2];
 	tmp += other.cell[2];
-	ans.cell[2] = tmp % (unsigned long long(1) << 32);
+	ans.cell[2] = tmp % ((unsigned long long)(1) << 32);
 	tmp = tmp >> 32;
 
 	tmp += ans.cell[1];
 	tmp += other.cell[1];
-	ans.cell[1] = tmp % (unsigned long long(1) << 32);
+	ans.cell[1] = tmp % ((unsigned long long)(1) << 32);
 	tmp = tmp >> 32;
 
 	tmp += ans.cell[0];
 	tmp += other.cell[0];
-	ans.cell[0] = tmp % (unsigned long long(1) << 32);
+	ans.cell[0] = tmp % ((unsigned long long) (1) << 32);
 	tmp = tmp >> 32;
 
 	return ans;
@@ -163,8 +163,8 @@ QInt QInt::operator * (QInt const & other) {
 			if (pos < 0)
 				break;
 
-			tmp += unsigned long long(cell[i]) * other1.cell[j] + ans.cell[pos];
-			ans.cell[pos] = tmp % (unsigned long long(1) << 32);
+			tmp += (unsigned long long)(cell[i]) * other1.cell[j] + ans.cell[pos];
+			ans.cell[pos] = tmp % ((unsigned long long)(1) << 32);
 			tmp = tmp >> 32;
 
 			pos--;
@@ -174,6 +174,7 @@ QInt QInt::operator * (QInt const & other) {
 }
 QInt QInt::operator / (QInt const & other) {
 	QInt tmp = *this;
+	bool sign_de = true, sign_mu = true;
 
 	QInt de;
 	QInt temp2 = other;
@@ -181,14 +182,18 @@ QInt QInt::operator / (QInt const & other) {
 		de = other;
 		de = -de;
 	}
-	else
+	else{
+		sign_de = false;
 		de = other;
+	}
 
 	QInt zero, num;
 
 
-	if ((*this) < zero)
-		num = QInt("-1");
+	if ((*this) < zero){
+		sign_mu = false;
+		tmp = -tmp;
+	}
 	
 
 	for (int i = 0; i < 128; i++) {
@@ -210,6 +215,8 @@ QInt QInt::operator / (QInt const & other) {
 			tmp.setBit(0, 1);
 
 	}
+	if (sign_de != sign_mu)
+		tmp = - tmp;
 	return tmp;
 
 }
