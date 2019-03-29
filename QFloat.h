@@ -1,4 +1,5 @@
 #pragma once
+#include "QInt.h"
 #include<string>
 #define NUMBER_BITS 128
 
@@ -22,6 +23,13 @@ private:
 public:
 	void scanQfloat();
 	void Printfloat();
+
+
+	QInt convert();
+
+	int  getExponent() const;
+	void setExponent(int Ex);
+
 
 	static Qfloat decToBin(std::string str);
 	static std::string binToDec(Qfloat x);
