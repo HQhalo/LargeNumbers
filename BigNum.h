@@ -5,7 +5,7 @@
 
 class BigNum
 {
-private:
+public:
     std::string data;
 
 public:
