@@ -190,7 +190,12 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     QInt number1(this->cell);
     QInt number2(other.cell);
     QInt numberRe;
-
+//	number2.PrintQInt();
+	for(int i=127; i <= 112; i --)
+	{
+		number1.setBit(i,false);
+		number2.setBit(i,false);
+	}
     int exponent1 = this->getExponent();
     int exponent2 = other.getExponent();
     int exponent = 0 ;
