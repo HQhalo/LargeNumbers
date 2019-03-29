@@ -40,7 +40,7 @@ QInt Qfloat::convert()  const{
 
 unsigned int  Qfloat::getExponent() const {
 	Qfloat tmp = *this;
-	//tmp.turnBitOff(127);
+	tmp.turnBitOff(127);
 	unsigned int ans = tmp.cell[0];
 	ans = ans >> 16;
 	return ans;
@@ -80,6 +80,12 @@ void Qfloat::scanQfloat(Qfloat &QF) {
 
 	QInt tmp ;
 	a = a + b;
+	while (a.size() != 1 && a[0] == '0')
+	{
+		a.erase(0, 1);
+		Ex--;
+	}
+		
 	for (int i = 0; i < a.size(); i++) {
 		tmp.setBit(127 - i, a[i] - '0');
 	}
