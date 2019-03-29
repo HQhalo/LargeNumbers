@@ -119,7 +119,13 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 	return re;
 }
 
+Qfloat Qfloat::operator - (Qfloat const & other)
+{
+	Qfloat temp = other;
+	temp.setBit( 127 , ! temp.getBit(127) );
 
+	return *this + temp;
+}
 
 
 
