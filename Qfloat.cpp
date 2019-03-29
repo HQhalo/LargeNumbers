@@ -13,7 +13,7 @@ void Qfloat::turnBitOn(const unsigned char &index){
 }
 
 void Qfloat::turnBitOff(const unsigned char &index){
-    cell[3 - index / 32] &= ~(unsigned int (1) << (index % 32));
+    cell[3 - index / 32] &= ~((unsigned int) (1) << (index % 32));
 }
 
 void Qfloat::setBit(const unsigned char &index, const bool &value)
@@ -187,16 +187,16 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 {
     Qfloat re;
 
-    QInt number1(*this);
-    QInt number2(other);
+    QInt number1(this->cell);
+    QInt number2(other.cell);
     QInt numberRe;
 
     int exponent1 = this->getExponent();
     int exponent2 = other.getExponent();
     int exponent = 0 ;
 
-    bool sign1 = QInt.getBit(127);
-    bool sign2 = QInt.getBit(127);
+    bool sign1 = number1.getBit(127);
+    bool sign2 = number2.getBit(127);
     bool sign;
 
     if(exponent1 > exponent2)
@@ -217,7 +217,7 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     {
         numberRe= number1 + number2;
         sign = sign1;
-        if(numberRe.getBit(113)= true)
+        if(numberRe.getBit(113) == true)
         {
             numberRe >> 1;
             exponent ++ ;
@@ -242,7 +242,7 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     
 	for(int i=0 ; i < 112 ; i++)
 	{
-		re.setBit(i, (numberRe >> i) &1 ); 
+		re.setBit(i, numberRe.getBit(i) ); 
 	}
 
 	return re;
