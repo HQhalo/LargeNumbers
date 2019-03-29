@@ -4,6 +4,20 @@ QInt::QInt(){
     cell[0] = cell[1] = cell[2] = cell[3] = 0;
 }
 
+QInt::QInt(unsigned int[]) {
+
+}
+
+QInt::QInt(Qfloat a) {
+	QInt tmp = a.convert();
+	QInt mask = QInt("1111111111111111");
+	mask = mask << ((32 * 3) + 16);
+	tmp = tmp & (~mask);
+
+	if (a.getExponent() == 0)
+		tmp.setBit(127 - 16 + 1, 1);
+	*this = tmp;
+}
 bool QInt::getBit(const unsigned char &index){
     return ((cell[3 - index / 32] >> (index % 32)) & 1);
 }

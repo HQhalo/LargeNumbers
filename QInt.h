@@ -3,6 +3,7 @@
 #include <vector>
 #define NUMBER_BITS 128
 #include "BigNum.h"
+#include "QFloat.h"
 
 const char hexTable[16] = {'0', '1', '2', '3',
                       '4', '5', '6', '7',
@@ -71,6 +72,8 @@ public:
     
 
     QInt(/* args */);
+	QInt(Qfloat a);
+	QInt(unsigned int[]);
     QInt(std::string decNum);
     ~QInt();
 };
