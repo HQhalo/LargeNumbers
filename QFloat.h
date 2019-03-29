@@ -3,11 +3,11 @@
 #include<string>
 #define NUMBER_BITS 128
 
-const char hexTable[16] = { '0', '1', '2', '3',
+/*const char hexTable[16] = { '0', '1', '2', '3',
 					  '4', '5', '6', '7',
 					  '8', '9', 'A', 'B',
-					  'C', 'D', 'E', 'F' };
-
+ 				  'C', 'D', 'E', 'F' };
+				  */
 class Qfloat
 {
 private:
@@ -15,20 +15,23 @@ private:
 	unsigned int cell[4];
 
 private:
-	bool getBit(const unsigned char &index);
+	bool getBit(const unsigned char &index) const;
 	void turnBitOn(const unsigned char &index);
 	void turnBitOff(const unsigned char &index);
 	void setBit(const unsigned char &index, const bool &value);
 
 public:
-	void scanQfloat();
-	void Printfloat();
+	static void scanQfloat(Qfloat &x);
+	static void PrintQfloat(Qfloat x);
 
 
-	QInt convert();
+	const unsigned int *  converT() const;
+	QInt convert() const;
 
-	int  getExponent() const;
-	void setExponent(int Ex);
+	
+
+	unsigned int  getExponent() const;
+	void setExponent(unsigned int Ex);
 
 
 	static Qfloat decToBin(std::string str);
@@ -44,7 +47,7 @@ public:
 	
 	Qfloat(/* args */);
 	Qfloat(std::string decNum);
-	~Qfloat();
+	//~Qfloat();
 };
 
 
