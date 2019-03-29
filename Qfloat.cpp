@@ -13,7 +13,7 @@ void Qfloat::turnBitOn(const unsigned char &index){
 }
 
 void Qfloat::turnBitOff(const unsigned char &index){
-    cell[3 - index / 32] &= ~(unsigned int (1) << (index % 32));
+    cell[3 - index / 32] &= ~((unsigned int) (1) << (index % 32));
 }
 
 void Qfloat::setBit(const unsigned char &index, const bool &value)
@@ -189,7 +189,78 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 }
 
 
+Qfloat Qfloat::operator + (Qfloat const & other)
+{
+    Qfloat re;
 
+    QInt number1(this->cell);
+    QInt number2(other.cell);
+    QInt numberRe;
+
+    int exponent1 = this->getExponent();
+    int exponent2 = other.getExponent();
+    int exponent = 0 ;
+
+    bool sign1 = number1.getBit(127);
+    bool sign2 = number2.getBit(127);
+    bool sign;
+
+    if(exponent1 > exponent2)
+    {
+        int shift = exponent1- exponent2;
+        number2 = number2 >> shift ;
+        number2 = number1 ;
+    }
+    if(exponent1 < exponent2)
+    {
+        int shift = exponent2- exponent1;
+        number1 = number1 >> shift ;
+        number1 = number2 ;
+    }
+    exponent = exponent1;
+     
+    if(sign1 == sign2)
+    {
+        numberRe= number1 + number2;
+        sign = sign1;
+        if(numberRe.getBit(113) == true)
+        {
+            numberRe >> 1;
+            exponent ++ ;
+        }
+    }
+    else
+    {
+        numberRe = (number1 > number2 ) ? (number1 - number2 ) : ( number2- number1 );
+        sign = ( number1 > number2 ) ? sign1 : sign2;
+        
+        for(int i=112;i >= 0 ; i-- )
+        {
+            if(numberRe.getBit(112) == true)
+                break;
+            numberRe << 1; 
+            exponent -- ;       
+        }
+    }
+    
+    re.setBit(127,sign);
+    re.setExponent(exponent);
+    
+	for(int i=0 ; i < 112 ; i++)
+	{
+		re.setBit(i, numberRe.getBit(i) ); 
+	}
+
+	return re;
+}
+
+Qfloat Qfloat::operator - (Qfloat const & other)
+{
+	Qfloat temp = other;
+	temp.setBit( 127 , ! temp.getBit(127) );
+
+	return *this + temp;
+}
 
 
 
