@@ -193,10 +193,10 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 {
     Qfloat re;
 
-    QInt number1(this->cell);
-    QInt number2(other.cell);
+    QInt number1 = this->convert();
+    QInt number2 = other.convert();
     QInt numberRe;
-//	number2.PrintQInt();
+	
 	for(int i=127; i <= 112; i --)
 	{
 		number1.setBit(i,false);
@@ -266,10 +266,4 @@ Qfloat Qfloat::operator - (Qfloat const & other)
 
 	return *this + temp;
 }
-
-
-
-
-
-
 
