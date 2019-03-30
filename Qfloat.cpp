@@ -139,10 +139,10 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 	
 	Sig1 = Sig1 << 14;
 	Sig2 = Sig2 << 14;
-	Sig1.PrintQInt();
+	/*Sig1.PrintQInt();
 	std:: cout << "\n"; 
 	Sig2.PrintQInt();
-	std::cout << "\n";
+	std::cout << "\n";*/
 	
 	if (Sig1 < Sig2) {
 		QInt tmp;
