@@ -52,9 +52,17 @@ void Qfloat::setExponent(unsigned int Ex) {
 	cell[0] = cell[0] | (Ex << 16);
 }
 
+
+
 void Qfloat::scanQfloat(Qfloat &QF) {
 	std::string s;
 	std::cin >> s;
+	bool isNegative = false;
+	if (s[0] == '-')
+	{
+		isNegative = true;
+		s.erase(0, 1);
+	}
 	std::string a ="", b= "";
 	bool haveDot = false;
 	for (int i = 0; i < s.size(); i++) {
@@ -102,6 +110,7 @@ void Qfloat::scanQfloat(Qfloat &QF) {
 
 	//std::cout << "???";
 	QF.setExponent(Ex );
+	QF.setBit(127, isNegative);
 	
 }
 void Qfloat::PrintQfloat(Qfloat x) {
@@ -157,8 +166,8 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 			ans = ans + (Sig1 >> i);
 		}
 	}
-	ans.PrintQInt();
-	std::cout << "\n";
+	//ans.PrintQInt();
+	//std::cout << "\n";
 	if (ans.getBit(127)) {
 		Ex++;
 		ans = ans >> 1;
@@ -180,7 +189,7 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 		Ex = (1 << 15 - 1), ans = ans & QInt();
 		*/
 
-	res.setBit(1, this->getBit(127) != other.getBit(127));
+	res.setBit(127, this->getBit(127) != other.getBit(127));
 
 	for (int i = 1; i <= 32 * 3 + 16; i++)
 		res.setBit(32 * 3 + 16 - i, ans.getBit(127 - 1- i));
@@ -408,6 +417,49 @@ Qfloat Qfloat::decToBin(std::string str)
 	result.setExponent(exponent);
 	result.setBit(127, isNegative);
 	return result;
+}
+
+ std::string Qfloat::binToDec(Qfloat x) {
+	 std::string s = "1";
+	 int sl = 128;
+	 for (int i = 0; i < sl; i++)
+		 s = s + "0";
+
+	 BigNum a = BigNum(s);
+	 BigNum b = BigNum(s);
+	 
+	 for (int i = 32 * 3 + 16 - 1; i >= 0; i--) {
+		 a.divineByTwo();
+		 if (x.getBit(i))
+			 b = b + a;
+	 }
+	 int Ex = x.getExponent() - ((1 << 14 )-1);
+	 while (Ex > 0) {
+		 b = b + b;
+
+		 Ex--;
+	 }
+	 while (Ex < 0) {
+		 b.divineByTwo();
+		 Ex++;
+	 }
+	 s.size();
+	 std::string ans = "";
+	 for (int i = 0;  i < b.data.size()-sl; i++) {
+		 ans = ans + b.data[i];
+	 }
+	 ans = ans + ".";
+	 for (int i = b.data.size() - sl; i < b.data.size(); i++) {
+		 ans = ans + b.data[i];
+	 }
+	 while (ans[ans.size() - 1] == '0')
+		 ans.erase(ans.size() - 1, 1);
+	 if (ans[ans.size() - 1] == '.')
+		 ans.erase(ans.size() - 1, 1);
+	 if (x.getBit(127))
+		 ans = "-" + ans;
+	 return ans;
+
 }
 
 
