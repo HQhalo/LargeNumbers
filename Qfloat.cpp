@@ -206,30 +206,27 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     QInt number2 = other.convert();
     QInt numberRe;
 	
-	for(int i=127; i <= 112; i --)
-	{
-		number1.setBit(i,false);
-		number2.setBit(i,false);
-	}
+	
     int exponent1 = this->getExponent();
     int exponent2 = other.getExponent();
     int exponent = 0 ;
 
     bool sign1 = number1.getBit(127);
     bool sign2 = number2.getBit(127);
-    bool sign;
+    bool sign = true;
 
     if(exponent1 > exponent2)
     {
         int shift = exponent1- exponent2;
         number2 = number2 >> shift ;
-        number2 = number1 ;
+        exponent2 = exponent1 ;
     }
+
     if(exponent1 < exponent2)
     {
         int shift = exponent2- exponent1;
         number1 = number1 >> shift ;
-        number1 = number2 ;
+        exponent1 = exponent2 ;
     }
     exponent = exponent1;
      
@@ -237,11 +234,13 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     {
         numberRe= number1 + number2;
         sign = sign1;
+		
         if(numberRe.getBit(113) == true)
         {
-            numberRe >> 1;
+            numberRe = numberRe >> 1;
             exponent ++ ;
         }
+		
     }
     else
     {
@@ -252,11 +251,12 @@ Qfloat Qfloat::operator + (Qfloat const & other)
         {
             if(numberRe.getBit(112) == true)
                 break;
-            numberRe << 1; 
+			numberRe = numberRe << 1; 
             exponent -- ;       
         }
     }
-    
+	//numberRe.PrintQInt();
+
     re.setBit(127,sign);
     re.setExponent(exponent);
     
