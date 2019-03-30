@@ -377,7 +377,10 @@ Qfloat Qfloat::decToBin(std::string str)
 	}
 
 	//Where is the dot?
+	if (str.find('.') == -1)
+		str = str + ".0";
 	int index = str.find('.');
+	
 	
 	BigNum integer(str.substr(0, index));//integer digits
 	while (integer.data[0] == '0') integer.data.erase(0, 1);
