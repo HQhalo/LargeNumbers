@@ -24,7 +24,7 @@ int main(int argc, char const *argv[])
 
 	std::cout << "\n";
 	std::cout << "\n";
-	std::cout << Qfloat::binToDec( x * y);
+	std::cout << Qfloat::binToDec( x + y);
 
 
 	/*std::cout << "Test dectoBin\n";
