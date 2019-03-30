@@ -9,18 +9,33 @@ int main(int argc, char const *argv[])
 	//QInt::decToBin(s).PrintQInt();
 	//std::cout << QInt::getToken(s);
 
+
 	Qfloat x = Qfloat();
 	Qfloat::scanQfloat(x);
-	Qfloat::PrintQfloat(x);
 
+	std::cout << Qfloat::binToDec(x);
+
+	std::cout << "\n";
 	std::cout << "\n";
 
 	Qfloat y = Qfloat();
 	Qfloat::scanQfloat(y);
-	Qfloat::PrintQfloat(y);
+	std::cout << Qfloat::binToDec(y);
 
 	std::cout << "\n";
-	Qfloat::PrintQfloat(x + y);
+	std::cout << "\n";
+	std::cout << Qfloat::binToDec( x + y);
+
+
+	/*std::cout << "Test dectoBin\n";
+	std::cin >> s;
+	Qfloat A = Qfloat::decToBin(s);
+	std::cout << (A.getExponent() - (1 << 14) + 1);
+	std::cout << "\n";
+	A.PrintQfloat(A);
+	//std::cout << Qfloat::binToDec(A);
+	*/
+
 
 	system("pause");
     return 0;

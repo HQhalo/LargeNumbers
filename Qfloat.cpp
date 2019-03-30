@@ -52,9 +52,17 @@ void Qfloat::setExponent(unsigned int Ex) {
 	cell[0] = cell[0] | (Ex << 16);
 }
 
+
+
 void Qfloat::scanQfloat(Qfloat &QF) {
 	std::string s;
 	std::cin >> s;
+	bool isNegative = false;
+	if (s[0] == '-')
+	{
+		isNegative = true;
+		s.erase(0, 1);
+	}
 	std::string a ="", b= "";
 	bool haveDot = false;
 	for (int i = 0; i < s.size(); i++) {
@@ -102,6 +110,7 @@ void Qfloat::scanQfloat(Qfloat &QF) {
 
 	//std::cout << "???";
 	QF.setExponent(Ex );
+	QF.setBit(127, isNegative);
 	
 }
 void Qfloat::PrintQfloat(Qfloat x) {
@@ -139,10 +148,10 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 	
 	Sig1 = Sig1 << 14;
 	Sig2 = Sig2 << 14;
-	Sig1.PrintQInt();
+	/*Sig1.PrintQInt();
 	std:: cout << "\n"; 
 	Sig2.PrintQInt();
-	std::cout << "\n";
+	std::cout << "\n";*/
 	
 	if (Sig1 < Sig2) {
 		QInt tmp;
@@ -157,8 +166,8 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 			ans = ans + (Sig1 >> i);
 		}
 	}
-	ans.PrintQInt();
-	std::cout << "\n";
+	//ans.PrintQInt();
+	//std::cout << "\n";
 	if (ans.getBit(127)) {
 		Ex++;
 		ans = ans >> 1;
@@ -180,7 +189,7 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 		Ex = (1 << 15 - 1), ans = ans & QInt();
 		*/
 
-	res.setBit(1, this->getBit(127) != other.getBit(127));
+	res.setBit(127, this->getBit(127) != other.getBit(127));
 
 	for (int i = 1; i <= 32 * 3 + 16; i++)
 		res.setBit(32 * 3 + 16 - i, ans.getBit(127 - 1- i));
@@ -272,7 +281,7 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 	Qfloat result;
 
 	result.setExponent(getExponent() - other.getExponent() + 2^14 - 1);
-	result.setBit(127, getBit(127) || other.getBit(127));
+	result.setBit(127, getBit(127) ^ other.getBit(127));
 
 	QInt a = convert();
 	QInt b = other.convert();
@@ -292,6 +301,173 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 	
 	return result;
 }
+
+Qfloat Qfloat::operator << (const int &n)
+{
+    Qfloat temp = *this;
+    
+    for( unsigned char i = 127 ; i >= n ; i--)
+    {
+        if(temp.getBit(i-n))
+            temp.turnBitOn(i);
+        else 
+            temp.turnBitOff(i);
+    }
+    for(unsigned char i=0;i<n;i++)
+    {
+        temp.turnBitOff(i);
+    }
+    return temp;
+
+}
+
+Qfloat Qfloat::operator >> (const int &n)
+{
+    Qfloat temp= *this;
+    for( unsigned char i = 0 ; i < 128-n ; i++)
+    {
+        if(temp.getBit(i+n))
+            temp.turnBitOn(i);
+        else 
+            temp.turnBitOff(i);
+    }
+    for(unsigned char i=128 - n ; i < 128 ;i++)
+    {
+        temp.turnBitOff(i);
+    }
+    return temp;
+}
+
+unsigned int Qfloat::getRidOfReal(BigNum &a)
+{
+	unsigned int result = 0;
+	unsigned int length = a.data.length();
+
+	while (a.data.length() <= length) 
+	{
+		a.doubleValue();
+		result++;
+	}
+
+	for (int i = 0; i < 112; i++)
+		a.doubleValue();
+
+	result += 112; 
+
+	a.data.erase(a.data.length() - length, length);
+
+	return result;
+}
+
+void Qfloat::getRidOfReal(BigNum &a, const unsigned int &count)
+{
+	unsigned int length = a.data.length();
+
+	for (unsigned int i = 0; i < count; i++) a.doubleValue();
+
+	a.data.erase(a.data.length() - length, length);
+}
+
+
+Qfloat Qfloat::decToBin(std::string str)
+{
+	Qfloat result;
+	bool isNegative = false;
+
+	//store the sign
+	if (str[0] == '-')
+	{
+		str.erase(0, 1);
+		isNegative = true;
+	}
+
+	//Where is the dot?
+	int index = str.find('.');
+	
+	BigNum integer(str.substr(0, index));//integer digits
+	BigNum real(str.substr(index + 1));  //real digits
+	
+	//exponent in be-ass
+	unsigned int exponent = 2 << 14 - 1;
+	index = -1;
+	
+	//proceed the integer digit
+	while (!integer.isEmpty())
+	{
+		if (index == 112)
+		{
+			exponent++;
+			result << 1;
+		} else index++;
+
+		result.setBit(index, integer.divineByTwo());
+	}
+
+	//push left integer digits then proceed real digits
+	if ((index < 112) && (index != -1))
+	{
+		result = result << (112 - index);
+		exponent -= 112 - index;
+		index = 112 - index;
+		//convert after .dot
+		result.getRidOfReal(real, index);
+		for (int i = 0; i < index; i++) result.setBit(i, real.divineByTwo());
+	} 
+	else if (index == -1)//there is no integer part
+	{
+		exponent -= result.getRidOfReal(real); //"result." just be formal
+		for (int i = 0; i < 113; i++) result.setBit(i, real.divineByTwo());	
+	}
+	//else the integer is too large, so sacrifice the preciseness
+	result.setExponent(exponent);
+	result.setBit(127, isNegative);
+	return result;
+}
+
+ std::string Qfloat::binToDec(Qfloat x) {
+	 std::string s = "1";
+	 int sl = 128;
+	 for (int i = 0; i < sl; i++)
+		 s = s + "0";
+
+	 BigNum a = BigNum(s);
+	 BigNum b = BigNum(s);
+	 
+	 for (int i = 32 * 3 + 16 - 1; i >= 0; i--) {
+		 a.divineByTwo();
+		 if (x.getBit(i))
+			 b = b + a;
+	 }
+	 int Ex = x.getExponent() - ((1 << 14 )-1);
+	 while (Ex > 0) {
+		 b = b + b;
+
+		 Ex--;
+	 }
+	 while (Ex < 0) {
+		 b.divineByTwo();
+		 Ex++;
+	 }
+	 s.size();
+	 std::string ans = "";
+	 for (int i = 0;  i < b.data.size()-sl; i++) {
+		 ans = ans + b.data[i];
+	 }
+	 ans = ans + ".";
+	 for (int i = b.data.size() - sl; i < b.data.size(); i++) {
+		 ans = ans + b.data[i];
+	 }
+	 while (ans[ans.size() - 1] == '0')
+		 ans.erase(ans.size() - 1, 1);
+	 if (ans[ans.size() - 1] == '.')
+		 ans.erase(ans.size() - 1, 1);
+	 if (x.getBit(127))
+		 ans = "-" + ans;
+	 return ans;
+
+}
+
+
 
 
 
