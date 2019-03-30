@@ -20,7 +20,7 @@ int main(int argc, char const *argv[])
 	Qfloat::PrintQfloat(y);
 
 	std::cout << "\n";
-	Qfloat::PrintQfloat(x*y);
+	Qfloat::PrintQfloat(x+y);
 
 	system("pause");
     return 0;
