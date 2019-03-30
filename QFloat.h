@@ -14,12 +14,14 @@ private:
 	/* data */
 	unsigned int cell[4];
 
-private:
+public:
 	bool getBit(const unsigned char &index) const;
 	void turnBitOn(const unsigned char &index);
 	void turnBitOff(const unsigned char &index);
 	void setBit(const unsigned char &index, const bool &value);
-
+	
+	unsigned int getRidOfReal(BigNum &a);
+	void getRidOfReal(BigNum &a, const unsigned int &count);
 public:
 	static void scanQfloat(Qfloat &x);
 	static void PrintQfloat(Qfloat x);
@@ -43,6 +45,9 @@ public:
 	Qfloat operator - (Qfloat const & other);
 	Qfloat operator * (Qfloat const & other);
 	Qfloat operator / (Qfloat const & other);
+
+	Qfloat operator << (const int &n);
+    Qfloat operator >> (const int &n);
 
 	
 	Qfloat(/* args */);

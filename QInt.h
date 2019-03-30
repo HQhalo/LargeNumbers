@@ -12,7 +12,7 @@ const char hexTable[16] = {'0', '1', '2', '3',
 
 class QInt
 {
-private:
+public:
     /* data */
     unsigned int cell[4];
   

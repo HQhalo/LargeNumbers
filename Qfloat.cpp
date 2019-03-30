@@ -262,6 +262,155 @@ Qfloat Qfloat::operator - (Qfloat const & other)
 	return *this + temp;
 }
 
+Qfloat Qfloat::operator / (const Qfloat &other)
+{
+	Qfloat result;
+
+	result.setExponent(getExponent() - other.getExponent() + 2^14 - 1);
+	result.setBit(127, getBit(127) ^ other.getBit(127));
+
+	QInt a = convert();
+	QInt b = other.convert();
+	
+	a = a << 1;
+	b = b << 1;
+	a = a / b;
+
+	if ((a.getBit(112) == false) && (result.getExponent() > 0))
+		result.setExponent(result.getExponent() - 1);
+	else a = a >> 1;
+
+	result.cell[3] = a.cell[3];
+	result.cell[2] = a.cell[2];
+	result.cell[1] = a.cell[1];
+	result.cell[0] |= (a.cell[0] << 16) >> 16;
+	
+	return result;
+}
+
+Qfloat Qfloat::operator << (const int &n)
+{
+    Qfloat temp = *this;
+    
+    for( unsigned char i = 127 ; i >= n ; i--)
+    {
+        if(temp.getBit(i-n))
+            temp.turnBitOn(i);
+        else 
+            temp.turnBitOff(i);
+    }
+    for(unsigned char i=0;i<n;i++)
+    {
+        temp.turnBitOff(i);
+    }
+    return temp;
+
+}
+
+Qfloat Qfloat::operator >> (const int &n)
+{
+    Qfloat temp= *this;
+    for( unsigned char i = 0 ; i < 128-n ; i++)
+    {
+        if(temp.getBit(i+n))
+            temp.turnBitOn(i);
+        else 
+            temp.turnBitOff(i);
+    }
+    for(unsigned char i=128 - n ; i < 128 ;i++)
+    {
+        temp.turnBitOff(i);
+    }
+    return temp;
+}
+
+unsigned int Qfloat::getRidOfReal(BigNum &a)
+{
+	unsigned int result = 0;
+	unsigned int length = a.data.length();
+
+	while (a.data.length() <= length) 
+	{
+		a.doubleValue();
+		result++;
+	}
+
+	for (int i = 0; i < 112; i++)
+		a.doubleValue();
+
+	result += 112; 
+
+	a.data.erase(a.data.length() - length, length);
+
+	return result;
+}
+
+void Qfloat::getRidOfReal(BigNum &a, const unsigned int &count)
+{
+	unsigned int length = a.data.length();
+
+	for (unsigned int i = 0; i < count; i++) a.doubleValue();
+
+	a.data.erase(a.data.length() - length, length);
+}
+
+
+Qfloat Qfloat::decToBin(std::string str)
+{
+	Qfloat result;
+	bool isNegative = false;
+
+	//store the sign
+	if (str[0] == '-')
+	{
+		str.erase(0, 1);
+		isNegative = true;
+	}
+
+	//Where is the dot?
+	int index = str.find('.');
+	
+	BigNum integer(str.substr(0, index));//integer digits
+	BigNum real(str.substr(index + 1));  //real digits
+	
+	//exponent in be-ass
+	unsigned int exponent = 2 << 14 - 1;
+	index = -1;
+	
+	//proceed the integer digit
+	while (!integer.isEmpty())
+	{
+		if (index == 112)
+		{
+			exponent++;
+			result << 1;
+		} else index++;
+
+		result.setBit(index, integer.divineByTwo());
+	}
+
+	//push left integer digits then proceed real digits
+	if ((index < 112) && (index != -1))
+	{
+		result = result << (112 - index);
+		exponent -= 112 - index;
+		index = 112 - index;
+		//convert after .dot
+		result.getRidOfReal(real, index);
+		for (int i = 0; i < index; i++) result.setBit(i, real.divineByTwo());
+	} 
+	else if (index == -1)//there is no integer part
+	{
+		exponent -= result.getRidOfReal(real); //"result." just be formal
+		for (int i = 0; i < 113; i++) result.setBit(i, real.divineByTwo());	
+	}
+	//else the integer is too large, so sacrifice the preciseness
+	result.setExponent(exponent);
+	result.setBit(127, isNegative);
+	return result;
+}
+
+
 
 
 
