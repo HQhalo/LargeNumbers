@@ -23,7 +23,11 @@ public:
 	unsigned int getRidOfReal(BigNum &a);
 	void getRidOfReal(BigNum &a, const unsigned int &count);
 public:
+
+	//nhap so dang nhi phan
 	static void scanQfloat(Qfloat &x);
+
+	//in so dang nhi phan
 	static void PrintQfloat(Qfloat x);
 
 
@@ -37,6 +41,8 @@ public:
 
 
 	static Qfloat decToBin(std::string str);
+
+	//tra ve so dang chuoi string
 	static std::string binToDec(Qfloat x);
 	static std::string binToHex(Qfloat x);
 	static std::string decToHex(std::string x);
