@@ -380,10 +380,11 @@ Qfloat Qfloat::decToBin(std::string str)
 	int index = str.find('.');
 	
 	BigNum integer(str.substr(0, index));//integer digits
+	while (integer.data[0] == '0') integer.data.erase(0, 1);
 	BigNum real(str.substr(index + 1));  //real digits
 	
 	//exponent in be-ass
-	unsigned int exponent = 2 << 14 - 1;
+	unsigned int exponent = 1 << 14 - 1;
 	index = -1;
 	
 	//proceed the integer digit
