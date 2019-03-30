@@ -202,29 +202,31 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 {
     Qfloat re;
 
-    QInt number1(this->cell);
-    QInt number2(other.cell);
+    QInt number1 = this->convert();
+    QInt number2 = other.convert();
     QInt numberRe;
-
+	
+	
     int exponent1 = this->getExponent();
     int exponent2 = other.getExponent();
     int exponent = 0 ;
 
     bool sign1 = number1.getBit(127);
     bool sign2 = number2.getBit(127);
-    bool sign;
+    bool sign = true;
 
     if(exponent1 > exponent2)
     {
         int shift = exponent1- exponent2;
         number2 = number2 >> shift ;
-        number2 = number1 ;
+        exponent2 = exponent1 ;
     }
+
     if(exponent1 < exponent2)
     {
         int shift = exponent2- exponent1;
         number1 = number1 >> shift ;
-        number1 = number2 ;
+        exponent1 = exponent2 ;
     }
     exponent = exponent1;
      
@@ -232,11 +234,13 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     {
         numberRe= number1 + number2;
         sign = sign1;
+		
         if(numberRe.getBit(113) == true)
         {
-            numberRe >> 1;
+            numberRe = numberRe >> 1;
             exponent ++ ;
         }
+		
     }
     else
     {
@@ -247,11 +251,12 @@ Qfloat Qfloat::operator + (Qfloat const & other)
         {
             if(numberRe.getBit(112) == true)
                 break;
-            numberRe << 1; 
+			numberRe = numberRe << 1; 
             exponent -- ;       
         }
     }
-    
+	//numberRe.PrintQInt();
+
     re.setBit(127,sign);
     re.setExponent(exponent);
     
@@ -418,9 +423,13 @@ Qfloat Qfloat::decToBin(std::string str)
 		for (int i = 0; i < 113; i++) result.setBit(i, real.divineByTwo());	
 	}
 	//else the integer is too large, so sacrifice the preciseness
+<<<<<<< HEAD
 
 	exponent += 112;
 	result.setExponent(exponent);
+=======
+	result.setExponent(exponent + 112);
+>>>>>>> master
 	result.setBit(127, isNegative);
 	return result;
 }
