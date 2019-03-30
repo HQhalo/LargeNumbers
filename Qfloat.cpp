@@ -267,3 +267,34 @@ Qfloat Qfloat::operator - (Qfloat const & other)
 	return *this + temp;
 }
 
+Qfloat Qfloat::operator / (const Qfloat &other)
+{
+	Qfloat result;
+
+	result.setExponent(getExponent() - other.getExponent() + 2^14 - 1);
+	result.setBit(127, getBit(127) || other.getBit(127));
+
+	QInt a = convert();
+	QInt b = other.convert();
+	
+	a = a << 1;
+	b = b << 1;
+	a = a / b;
+
+	if ((a.getBit(112) == false) && (result.getExponent() > 0))
+		result.setExponent(result.getExponent() - 1);
+	else a = a >> 1;
+
+	result.cell[3] = a.cell[3];
+	result.cell[2] = a.cell[2];
+	result.cell[1] = a.cell[1];
+	result.cell[0] |= (a.cell[0] << 16) >> 16;
+	
+	return result;
+}
+
+
+
+
+
+

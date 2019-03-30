@@ -14,7 +14,7 @@ private:
 	/* data */
 	unsigned int cell[4];
 
-private:
+public:
 	bool getBit(const unsigned char &index) const;
 	void turnBitOn(const unsigned char &index);
 	void turnBitOff(const unsigned char &index);
