@@ -415,7 +415,7 @@ Qfloat Qfloat::decToBin(std::string str)
 		for (int i = 0; i < 113; i++) result.setBit(i, real.divineByTwo());	
 	}
 	//else the integer is too large, so sacrifice the preciseness
-	result.setExponent(exponent);
+	result.setExponent(exponent + 112);
 	result.setBit(127, isNegative);
 	return result;
 }
