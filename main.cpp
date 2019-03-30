@@ -4,7 +4,7 @@ int main(int argc, char const *argv[])
 {
     /* code */
 	std::string s;
-
+	/*
 	//getline(std::cin,s);
 	//QInt::decToBin(s).PrintQInt();
 	//std::cout << QInt::getToken(s);
@@ -25,16 +25,24 @@ int main(int argc, char const *argv[])
 	std::cout << "\n";
 	std::cout << "\n";
 	std::cout << Qfloat::binToDec( x + y);
+	*/
 
-
-	/*std::cout << "Test dectoBin\n";
+	std::cout << "Test dectoBin\n";
+	std::cout << "Nhap so thap phan\n";
 	std::cin >> s;
 	Qfloat A = Qfloat::decToBin(s);
-	std::cout << (A.getExponent() - (1 << 14) + 1);
-	std::cout << "\n";
-	A.PrintQfloat(A);
+
+
+	std::cout << "Nhap so thap phan\n";
+	std::cin >> s;
+	Qfloat B = Qfloat::decToBin(s);
+
+
+	std::cout << "ket qua phep *\n";
+	std::cout <<Qfloat::binToDec(A * B);
+
 	//std::cout << Qfloat::binToDec(A);
-	*/
+	
 
 
 	system("pause");
