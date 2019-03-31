@@ -24,8 +24,12 @@ public:
 public:
 
     static QInt decToBin(std::string str);
+
+    static QInt binToQInt(std::string str);
     static std::string binToDec(QInt x);
+    
     static std::string binToHex(QInt x);
+    
     static QInt hexToBin(const std::string &str);
     static std::string decToHex(std::string x);    
 
