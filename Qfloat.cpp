@@ -363,25 +363,20 @@ Qfloat Qfloat::operator >> (const int &n)
     return temp;
 }
 
-unsigned int Qfloat::getRidOfReal(BigNum &a)
+void Qfloat::pushOut(BigNum &a, unsigned int &exponent)
 {
-	unsigned int result = 0;
 	unsigned int length = a.data.length();
 
-	while (a.data.length() <= length) 
+	while ((a.data.length() <= length) && (exponent > 0)) 
 	{
 		a.doubleValue();
-		result++;
+		exponent--;
 	}
 
 	for (int i = 0; i < 112; i++)
 		a.doubleValue();
 
-	result += 112; 
-
 	a.data.erase(a.data.length() - length, length);
-
-	return result;
 }
 
 void Qfloat::getRidOfReal(BigNum &a, const unsigned int &count)
@@ -440,7 +435,7 @@ Qfloat Qfloat::decToBin(std::string str)
 	if ((index < 112) && (index != -1))
 	{
 		result = result << (112 - index);
-		exponent -= 112 - index;
+		exponent += index;
 		index = 112 - index;
 		//convert after .dot
 		result.getRidOfReal(real, index);
@@ -448,17 +443,17 @@ Qfloat Qfloat::decToBin(std::string str)
 	} 
 	else if (index == -1)//there is no integer part
 	{
-		exponent -= result.getRidOfReal(real); //"result." just be formal
+		result.pushOut(real, exponent); //"result." just be formal
 		for (int i = 0; i < 113; i++) result.setBit(i, real.divineByTwo());	
 	}
 	//else the integer is too large, so sacrifice the preciseness
 
-	exponent += 112;
 	result.setExponent(exponent);
 
 	result.setBit(127, isNegative);
 	return result;
 }
+
 
  std::string Qfloat::binToDec(Qfloat x) {
 	 std::string s = "1";
