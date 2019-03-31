@@ -135,6 +135,12 @@ void Qfloat::PrintQfloat(Qfloat x) {
 }
 
 Qfloat Qfloat::operator * (Qfloat const & other) {
+
+	if (this->isZero() || other.isZero()) {
+		return Qfloat();
+	}
+
+
 	unsigned int Ex1 = getExponent();
 	unsigned int Ex2 = other.getExponent();
 	if (Ex1 == 0)
@@ -180,15 +186,10 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 		if (Ex == 0)
 			break;
 	}
+
 	Qfloat res = Qfloat();
 	res.setExponent(Ex);
 	
-	/*if (Ex < 0) Ex = (1 << 15) - 1;
-
-	if (Ex > (1 << 15 - 1))
-		Ex = (1 << 15 - 1), ans = ans & QInt();
-		*/
-
 	res.setBit(127, this->getBit(127) != other.getBit(127));
 
 	for (int i = 1; i <= 32 * 3 + 16; i++)
@@ -288,7 +289,7 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 {
 	Qfloat result;
 
-	result.setExponent(getExponent() - other.getExponent() + 2^14 - 1);
+	result.setExponent(getExponent() - other.getExponent() + (1 << 14) - 1);
 	result.setBit(127, getBit(127) ^ other.getBit(127));
 
 	QInt a = convert();
@@ -379,7 +380,7 @@ void Qfloat::getRidOfReal(BigNum &a, const unsigned int &count)
 
 Qfloat Qfloat::decToBin(std::string str)
 {
-	Qfloat result;
+	
 	bool isNegative = false;
 
 	//store the sign
@@ -389,9 +390,13 @@ Qfloat Qfloat::decToBin(std::string str)
 		isNegative = true;
 	}
 
-	//Where is the dot?
+	// add "." and "0"
 	if (str.find('.') == -1)
 		str = str + ".0";
+	Qfloat result;
+	if (str == "0.0") return result;
+
+	//Where is the dot?
 	int index = str.find('.');
 	
 	
@@ -454,6 +459,7 @@ Qfloat Qfloat::decToBin(std::string str)
 			 b = b + a;
 	 }
 	 int Ex = x.getExponent() - ((1 << 14 )-1);
+	 
 	 while (Ex > 0) {
 		 b = b + b;
 
@@ -462,20 +468,34 @@ Qfloat Qfloat::decToBin(std::string str)
 	 while (Ex < 0) {
 		 b.divineByTwo();
 		 Ex++;
+		 
 	 }
-	 s.size();
+
+
+	 while (b.data.size() < 129)
+		 b.data = "0" + b.data;
+	 
+	  
+
+
 	 std::string ans = "";
-	 for (int i = 0;  i < b.data.size()-sl; i++) {
+	 
+	 for (int i = 0;  i < (int)b.data.size()-sl; i++) {
 		 ans = ans + b.data[i];
+		 
 	 }
+	 
 	 ans = ans + ".";
-	 for (int i = b.data.size() - sl; i < b.data.size(); i++) {
+	 for (int i = (int) b.data.size() - sl; i < (int) b.data.size(); i++) {
 		 ans = ans + b.data[i];
 	 }
+	
+
 	 while (ans[ans.size() - 1] == '0')
 		 ans.erase(ans.size() - 1, 1);
 	 if (ans[ans.size() - 1] == '.')
 		 ans.erase(ans.size() - 1, 1);
+
 	 if (x.getBit(127))
 		 ans = "-" + ans;
 	 return ans;
@@ -483,7 +503,19 @@ Qfloat Qfloat::decToBin(std::string str)
 }
 
 
-
+ bool Qfloat::isZero() const {
+	 if (getExponent() == 0) {
+		 QInt zero;
+		 if (zero == convert())
+			 return true;
+		 return false;
+	 }
+	 return false;
+ }
+ void Qfloat::setZero() {
+	 Qfloat zero;
+	 (*this) = zero;
+ }
 
 
 
