@@ -327,8 +327,58 @@ bool QInt::operator < (QInt const &other)
 		return false;
 	}
 
-	
 }
+
+
+QInt QInt::operator % (QInt const & other) {
+	QInt tmp = *this;
+	bool sign_de = true, sign_mu = true;
+
+	QInt de;
+	QInt temp2 = other;
+	if (temp2 > de) {
+		de = other;
+		de = -de;
+	}
+	else {
+		sign_de = false;
+		de = other;
+	}
+
+	QInt zero, num;
+
+
+	if ((*this) < zero) {
+		sign_mu = false;
+		tmp = -tmp;
+	}
+
+
+	for (int i = 0; i < 128; i++) {
+		int bit_left = tmp.getBit(127);
+		tmp = tmp << 1;
+		num = num << 1;
+		num.setBit(0, bit_left);
+
+
+		num = num + de;
+
+
+		if (num < zero) {
+			tmp.setBit(0, 0);
+			num = num - de;
+
+		}
+		else
+			tmp.setBit(0, 1);
+
+	}
+	if (sign_de != sign_mu)
+		tmp = -tmp;
+	return num;
+
+}
+
 bool QInt::operator >= (QInt const &other)
 {
 	return !(*this < other);
