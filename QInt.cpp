@@ -79,6 +79,20 @@ QInt QInt::decToBin(std::string str){
     return QInt(str);
 }
 
+QInt QInt::binToQInt(std::string str)
+{
+	QInt re;
+	if(str.size() > 128)
+		return {};
+	//std::cout<<str.size()<<std::endl;
+	for(int i = 0; i < str.size() ;i ++)
+	{
+		re.setBit(str.size() - i -1, str[i] == '1');
+	}
+
+	return re;
+}
+
 std::string QInt::binToDec(QInt x)
 {
     bool isNegative = x.getBit(127);
@@ -105,9 +119,13 @@ std::string QInt::binToHex(QInt x)
         for (int j = 0; j < 8; j++)
         {
             result = BigNum::intToHex(x.cell[i] % 16) + result;
-            x.cell[i] >> 4;
+           x.cell[i] = x.cell[i] >> 4;
         }
     
+	while(result.size() > 0 && result[0] == '0')
+	{
+		result.erase(0,1);
+	}
     return result;
 }
 
@@ -572,8 +590,62 @@ std::string QInt::getToken(std::string Tokens) {
 		}
 
 
-		a.PrintQInt();
+		//a.PrintQInt();
 
+	}
+
+	if( Token.size() == 3 )
+	{
+		if(Token[0] == "2")
+		{
+			if(Token[1] == "10")
+			{
+				QInt temp= QInt::binToQInt(Token[2]);
+				
+				return QInt::binToDec(temp);
+			}
+			if(Token[1] == "16")
+			{
+				QInt temp= QInt::binToQInt(Token[2]);
+				
+				return QInt::binToHex(temp);				
+			}
+		}
+		if(Token[0] == "10")
+		{
+			if(Token[1] == "2")
+			{
+				QInt temp = QInt::decToBin(Token[2]);
+
+				std::string re = "";
+				bool check = false;
+				int i= 127;
+				while( temp.getBit(i) == 0 )
+				{
+					i--;
+				}
+				for (; i >= 0; i--)
+				{
+					re += ('0' + temp.getBit(i));
+				}
+				return re;
+			}
+			if(Token[1] == "16")
+			{
+				
+			}
+		}
+		if(Token[0] == "16")
+		{
+			if(Token[1] == "2")
+			{
+
+			}
+			if(Token[1] == "10")
+			{
+				
+			}
+		}
 	}
 
 	return "chua co kq";
