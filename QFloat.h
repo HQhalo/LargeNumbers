@@ -51,6 +51,7 @@ public:
 	Qfloat operator * (Qfloat const & other);
 	Qfloat operator / (Qfloat const & other);
 
+
 	Qfloat operator << (const int &n);
     Qfloat operator >> (const int &n);
 

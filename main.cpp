@@ -9,6 +9,12 @@ int main(int argc, char const *argv[])
 	std::cout << QInt::getToken(s);
 	*/
 	
+
+	std::string s;
+	// getline(std::cin,s);
+	
+	// std::cout << QInt::getToken(s);
+
 	/*
 	Qfloat x = Qfloat();
 	Qfloat::scanQfloat(x);
@@ -26,7 +32,7 @@ int main(int argc, char const *argv[])
 	std::cout << "\n";
 	std::cout << Qfloat::binToDec( x + y);
 	*/
-	
+
 	std::cout << "Test dectoBin\n";
 	std::cout << "Nhap so thap phan\n";
 	std::string s;

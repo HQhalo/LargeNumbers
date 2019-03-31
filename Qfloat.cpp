@@ -206,7 +206,7 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     QInt number1 = this->convert();
     QInt number2 = other.convert();
     QInt numberRe;
-		
+	QInt zero;
     int exponent1 = this->getExponent();
     int exponent2 = other.getExponent();
     int exponent = 0 ;
@@ -215,11 +215,24 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     bool sign2 = other.getBit(127);
     bool sign = true;
 
+	if( exponent1 == 0 && number1 == zero)
+	{
+		return other;
+	}
+	
+	if( exponent2 == 0 && number2 == zero)
+	{
+		return *this;
+	}
     if(exponent1 > exponent2)
     {
         int shift = exponent1- exponent2;
         number2 = number2 >> shift ;
         exponent2 = exponent1 ;
+		if(number2 == zero )
+		{
+			return *this;
+		}
     }
 
     if(exponent1 < exponent2)
@@ -227,6 +240,10 @@ Qfloat Qfloat::operator + (Qfloat const & other)
         int shift = exponent2- exponent1;
         number1 = number1 >> shift ;
         exponent1 = exponent2 ;
+		if(number1 == zero )
+		{
+			return other;
+		}
     }
     exponent = exponent1;
      
@@ -244,26 +261,25 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     }
     else
     {
-		if (number1 == number2)
+		numberRe = (number1 > number2) ? (number1 - number2) : (number2 - number1);
+
+		sign = (number1 > number2) ? sign1 : sign2;
+
+		for (int i = 112; i >= 0; i--)
 		{
-			// numberRe is zero
-			exponent = 0;
+			if (numberRe.getBit(112) == true)
+				break;
+			numberRe = numberRe << 1;
+			exponent--;
 		}
-		else {
-			numberRe = (number1 > number2) ? (number1 - number2) : (number2 - number1);
-
-
-			sign = (number1 > number2) ? sign1 : sign2;
-
-			for (int i = 112; i >= 0; i--)
-			{
-				if (numberRe.getBit(112) == true)
-					break;
-				numberRe = numberRe << 1;
-				exponent--;
-			}
-		}
+		
     }
+
+	if(numberRe == zero )
+	{
+		exponent = 0;
+		sign = 0;
+	}
 	//numberRe.PrintQInt();
 
     re.setBit(127,sign);
