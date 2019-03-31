@@ -45,6 +45,7 @@ public:
 	QInt  operator -();
     QInt operator * ( QInt const & other);
     QInt operator / ( QInt const & other);
+	QInt operator % (QInt const & other);
 
  
     bool operator < ( QInt const &other);
