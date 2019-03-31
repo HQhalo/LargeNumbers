@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
 
 
 	std::cout << "ket qua phep *\n";
-	std::cout <<Qfloat::binToDec(A * B);
+	std::cout <<Qfloat::binToDec(A + B);
 
 	//std::cout << Qfloat::binToDec(A);
 	

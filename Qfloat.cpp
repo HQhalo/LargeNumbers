@@ -26,7 +26,7 @@ const unsigned int *  Qfloat::converT() const {
 	return cell;
 }
 QInt Qfloat::convert()  const{
-	unsigned int a[4] = { 0, 0, 0, (1 << 15) - 1 };
+	unsigned int a[4] = { 0, 0, 0, (1 << 16) - 1 };
 
 	QInt tmp = QInt((*this).converT());
 	QInt mask = QInt(a);
@@ -200,19 +200,18 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 
 Qfloat Qfloat::operator + (Qfloat const & other)
 {
-    Qfloat re;
+     Qfloat re;
 
     QInt number1 = this->convert();
     QInt number2 = other.convert();
     QInt numberRe;
-	
-	
+		
     int exponent1 = this->getExponent();
     int exponent2 = other.getExponent();
     int exponent = 0 ;
 
-    bool sign1 = number1.getBit(127);
-    bool sign2 = number2.getBit(127);
+    bool sign1 = this->getBit(127);
+    bool sign2 = other.getBit(127);
     bool sign = true;
 
     if(exponent1 > exponent2)
@@ -244,16 +243,25 @@ Qfloat Qfloat::operator + (Qfloat const & other)
     }
     else
     {
-        numberRe = (number1 > number2 ) ? (number1 - number2 ) : ( number2- number1 );
-        sign = ( number1 > number2 ) ? sign1 : sign2;
-        
-        for(int i=112;i >= 0 ; i-- )
-        {
-            if(numberRe.getBit(112) == true)
-                break;
-			numberRe = numberRe << 1; 
-            exponent -- ;       
-        }
+		if (number1 == number2)
+		{
+			// numberRe is zero
+			exponent = 0;
+		}
+		else {
+			numberRe = (number1 > number2) ? (number1 - number2) : (number2 - number1);
+
+
+			sign = (number1 > number2) ? sign1 : sign2;
+
+			for (int i = 112; i >= 0; i--)
+			{
+				if (numberRe.getBit(112) == true)
+					break;
+				numberRe = numberRe << 1;
+				exponent--;
+			}
+		}
     }
 	//numberRe.PrintQInt();
 
