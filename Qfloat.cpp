@@ -482,7 +482,16 @@ Qfloat Qfloat::decToBin(std::string str)
 	 
 	 bool isNeedToFix = false;
 
-	 for (int i = 34; i < b.data.size(); i++)
+	 int pos = 33;
+	 /*
+	 for (int i = 0; i < pos; i++)
+		 std::cout << "1";
+	 std::cout <<"\n";
+	 std::cout << b.data << "\n";
+	 */
+
+	 for (int i = pos; i < b.data.size(); i++)
+		 
 		 if (b.data[i] != '0')
 		 {
 			 isNeedToFix = true;
@@ -490,7 +499,7 @@ Qfloat Qfloat::decToBin(std::string str)
 
 	 if (isNeedToFix) {
 		 std::string add = "1";
-		 for (int i = 34; i < b.data.size(); i++) {
+		 for (int i = pos; i < b.data.size(); i++) {
 			 add = add + "0";
 			 b.data[i] = '0';
 		 }
@@ -498,12 +507,7 @@ Qfloat Qfloat::decToBin(std::string str)
 	 }
 		 
 	 
-	 if (b.data[b.data.size() - 1]!='0') {
-		 std::cout << "??";
-		 b.data[b.data.size() - 1] = '0';
-		 b = b + BigNum("10");
-	 }
-
+	 
 
 	 std::string ans = "";
 	 
