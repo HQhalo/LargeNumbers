@@ -304,26 +304,50 @@ Qfloat Qfloat::operator - (Qfloat const & other)
 Qfloat Qfloat::operator / (const Qfloat &other)
 {
 	Qfloat result;
-
-	result.setExponent(getExponent() - other.getExponent() + (1 << 14) - 1);
-	result.setBit(127, getBit(127) ^ other.getBit(127));
-
+	//Calc exponent
+	unsigned int exponent = (1 << 14) - 1 + getExponent() - other.getExponent();
+	//A helping hand - QInt
 	QInt a = convert();
 	QInt b = other.convert();
-	
-	a = a << 1;
-	b = b << 1;
-	a = a / b;
+	QInt c;
 
-	if ((a.getBit(112) == false) && (result.getExponent() > 0))
-		result.setExponent(result.getExponent() - 1);
-	else a = a >> 1;
 
-	result.cell[3] = a.cell[3];
-	result.cell[2] = a.cell[2];
-	result.cell[1] = a.cell[1];
-	result.cell[0] |= (a.cell[0] << 16) >> 16;
-	
+	unsigned int count = 0;
+
+	for (int i = 0; i < 113; i++)
+	{		
+		c = c << 1;
+		c = (c + (a / b)) >> count;
+		a = a % b;
+		a = a << 1;
+		//divine by unformal one
+		QInt limit = QInt("1");
+		limit = limit << (i + 1);
+		while (c >= limit)
+		{
+			c = c >> 1;
+			count++;
+			exponent++;
+		}
+	}
+	//Adjust exponent for more precise result
+	while ((exponent > 0) && (c.getBit(112) == false))
+	{
+		c = c << 1;
+		c = c + (a / b);
+		a = a % b;
+		a = a << 1;
+		exponent--;		
+	}
+	//Transfer data to Qfloat result
+	result.cell[3] = c.cell[3];
+	result.cell[2] = c.cell[2];
+	result.cell[1] = c.cell[1];
+	result.cell[0] = c.cell[0];
+	//Sign and Exponent
+	result.setExponent(exponent);
+	result.setBit(127, getBit(127) ^ other.getBit(127));
+
 	return result;
 }
 
