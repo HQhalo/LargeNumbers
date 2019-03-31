@@ -20,7 +20,7 @@ public:
 	void turnBitOff(const unsigned char &index);
 	void setBit(const unsigned char &index, const bool &value);
 	
-	unsigned int getRidOfReal(BigNum &a);
+	void pushOut(BigNum &a, unsigned int &exponent);
 	void getRidOfReal(BigNum &a, const unsigned int &count);
 public:
 	//nhap so dang nhi phan
