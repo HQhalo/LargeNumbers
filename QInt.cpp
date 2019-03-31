@@ -136,15 +136,17 @@ QInt QInt::hexToBin(const std::string &str)
     int i = 3;
     int m = 0;
 
-    for (int i = str.length() - 1; i >= 0; i--)
+    for (int j = 0 ; j < str.size(); j++)
     {
-        temp.cell[i] += BigNum::hexToInt(str[i]);
-        m += 4;
-        if (m == 32)
+		if (m == 32)
         {
             m = 0;
             i--;
-        } else temp.cell[i] <<= 4;
+        } else temp.cell[i] = temp.cell[i] << 4;
+		
+        temp.cell[i] += BigNum::hexToInt(str[j]);
+        m += 4;
+        
     }
     
     return temp;
@@ -632,18 +634,31 @@ std::string QInt::getToken(std::string Tokens) {
 			}
 			if(Token[1] == "16")
 			{
-				
+				return QInt::decToHex(Token[2]);
 			}
 		}
 		if(Token[0] == "16")
 		{
 			if(Token[1] == "2")
 			{
-
+				QInt temp = QInt::hexToBin(Token[2]);
+				std::string re = "";
+				bool check = false;
+				int i= 127;
+				while( temp.getBit(i) == 0 )
+				{
+					i--;
+				}
+				for (; i >= 0; i--)
+				{
+					re += ('0' + temp.getBit(i));
+				}
+				return re;	
 			}
 			if(Token[1] == "10")
 			{
-				
+				QInt temp = QInt::hexToBin(Token[2]);
+				return QInt::binToDec(temp);				
 			}
 		}
 	}
