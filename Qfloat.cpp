@@ -32,7 +32,7 @@ QInt Qfloat::convert()  const{
 	QInt mask = QInt(a);
 	mask = mask << ((32 * 3) + 16);
 	tmp = tmp & (~mask);
-	std::cout << "\n";
+	
 	if ((*this).getExponent() != 0)
 		tmp.setBit(127 - 16 + 1 , 1);
 	return tmp;
