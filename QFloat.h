@@ -23,7 +23,6 @@ public:
 	unsigned int getRidOfReal(BigNum &a);
 	void getRidOfReal(BigNum &a, const unsigned int &count);
 public:
-
 	//nhap so dang nhi phan
 	static void scanQfloat(Qfloat &x);
 
@@ -59,6 +58,10 @@ public:
 	Qfloat(/* args */);
 	Qfloat(std::string decNum);
 	//~Qfloat();
+
+
+	bool isZero() const;
+	void setZero();
 };
 
 
