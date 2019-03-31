@@ -446,12 +446,17 @@ Qfloat Qfloat::decToBin(std::string str)
 
  std::string Qfloat::binToDec(Qfloat x) {
 	 std::string s = "1";
-	 int sl = 128;
+	 int sl = 50;
 	 for (int i = 0; i < sl; i++)
 		 s = s + "0";
 
 	 BigNum a = BigNum(s);
 	 BigNum b = BigNum(s);
+
+	 if (x.getExponent() == 0)
+		 b = BigNum("0");
+
+	 
 	 
 	 for (int i = 32 * 3 + 16 - 1; i >= 0; i--) {
 		 a.divineByTwo();
@@ -472,10 +477,32 @@ Qfloat Qfloat::decToBin(std::string str)
 	 }
 
 
-	 while (b.data.size() < 129)
+	 while (b.data.size() < sl + 1)
 		 b.data = "0" + b.data;
 	 
-	  
+	 bool isNeedToFix = false;
+
+	 for (int i = 34; i < b.data.size(); i++)
+		 if (b.data[i] != '0')
+		 {
+			 isNeedToFix = true;
+		 }
+
+	 if (isNeedToFix) {
+		 std::string add = "1";
+		 for (int i = 34; i < b.data.size(); i++) {
+			 add = add + "0";
+			 b.data[i] = '0';
+		 }
+		 b = b + add;
+	 }
+		 
+	 
+	 if (b.data[b.data.size() - 1]!='0') {
+		 std::cout << "??";
+		 b.data[b.data.size() - 1] = '0';
+		 b = b + BigNum("10");
+	 }
 
 
 	 std::string ans = "";
@@ -489,6 +516,8 @@ Qfloat Qfloat::decToBin(std::string str)
 	 for (int i = (int) b.data.size() - sl; i < (int) b.data.size(); i++) {
 		 ans = ans + b.data[i];
 	 }
+
+
 	
 
 	 while (ans[ans.size() - 1] == '0')
