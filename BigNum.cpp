@@ -68,8 +68,25 @@ BigNum::BigNum(const std::string& str){
 
 BigNum BigNum::operator + (BigNum other)
 {
-    while (data.length() < other.data.length()) data = '0' + data;
-    while (data.length() > other.data.length()) other.data = '0' + other.data;
+	int data_size = data.length();
+	if (data_size < other.data.length())
+		data_size = other.data.length();
+
+	std::string tmp;
+
+	tmp = "";
+	for (int i = 0; i < data_size - data.length(); i++)
+		tmp = tmp + "0";
+	data = tmp + data;
+	
+
+	tmp = "";
+	for (int i = 0; i < data_size - other.data.length(); i++)
+		tmp = tmp + "0";
+	other.data = tmp + other.data;
+
+    //while (data.length() < other.data.length()) data = '0' + data;
+    //while (data.length() > other.data.length()) other.data = '0' + other.data;
     
     BigNum result;
     int temp = 0;
@@ -87,6 +104,8 @@ BigNum BigNum::operator + (BigNum other)
 
     return result;
 }
+
+
 
 void BigNum::doubleValue()
 {
