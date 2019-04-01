@@ -68,8 +68,25 @@ BigNum::BigNum(const std::string& str){
 
 BigNum BigNum::operator + (BigNum other)
 {
-    while (data.length() < other.data.length()) data = '0' + data;
-    while (data.length() > other.data.length()) other.data = '0' + other.data;
+	int data_size = data.length();
+	if (data_size < other.data.length())
+		data_size = other.data.length();
+
+	std::string tmp;
+
+	tmp = "";
+	for (int i = 0; i < data_size - data.length(); i++)
+		tmp = tmp + "0";
+	data = tmp + data;
+	
+
+	tmp = "";
+	for (int i = 0; i < data_size - other.data.length(); i++)
+		tmp = tmp + "0";
+	other.data = tmp + other.data;
+
+    //while (data.length() < other.data.length()) data = '0' + data;
+    //while (data.length() > other.data.length()) other.data = '0' + other.data;
     
     BigNum result;
     int temp = 0;
@@ -87,6 +104,8 @@ BigNum BigNum::operator + (BigNum other)
 
     return result;
 }
+
+
 
 void BigNum::doubleValue()
 {
@@ -112,9 +131,8 @@ bool BigNum::divineByTwo()
 
     for (int i = 0; i < n; i++)
     {
-        value = data[i] + temp - 48 * 10;
+        value = data[i]- 48 + temp  * 10;
         temp = (value & 1);
-
         data[i] = char((value >> 1) + 48);
     }
 
