@@ -343,7 +343,9 @@ Qfloat Qfloat::operator - (Qfloat const & other)
 Qfloat Qfloat::operator / (const Qfloat &other)
 {
 	Qfloat result;
-
+	//Divine by Zero
+	if (other.isZero()) return Qfloat::error();
+	//
 	int upperBound = (1 << 15) - 1;
 	//Calc exponent
 	int exponent = (1 << 14) - 1 + getExponent() - other.getExponent();
@@ -356,10 +358,8 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 	{
 		b = b << 1;
 		exponent++;
-		if (exponent >= upperBound) 
-			return Qfloat::infinity();
 	}
-	while (a.getBit(112) == false) 
+	while ((a.getBit(112) == false) && (exponent > 0)) 
 	{
 		a = a << 1;
 		exponent--;
@@ -382,12 +382,14 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 		a = a << 1;
 		exponent--;		
 	}
-	//If result is unformal one
+	//If result is unformal one or infinity
 	if (exponent < 0)
 	{
 		c = c >> (-exponent);
 		exponent = 0;
-	}
+	} else 
+	if (exponent >= upperBound) 
+		return Qfloat::infinity();
 	//Transfer data to Qfloat result
 	result.cell[3] = c.cell[3];
 	result.cell[2] = c.cell[2];
