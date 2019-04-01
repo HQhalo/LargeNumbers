@@ -1,4 +1,20 @@
 #include "QFloat.h"
+
+Qfloat::Qfloat infinity()
+{
+	Qfloat result;
+	result.cell[0] = ((1 << 15) - 1) << 16;
+	return result;	
+}
+
+Qfloat::Qfloat error()
+{
+	Qfloat result;
+	result.cell[0] = ((1 << 15) - 1) << 16;
+	result.cell[3] = 404;
+	return result;	
+}
+
 Qfloat::Qfloat(){
     cell[0] = cell[1] = cell[2] = cell[3] = 0;
 }
@@ -327,8 +343,10 @@ Qfloat Qfloat::operator - (Qfloat const & other)
 Qfloat Qfloat::operator / (const Qfloat &other)
 {
 	Qfloat result;
+
+	int upperBound = (1 << 15) - 1;
 	//Calc exponent
-	unsigned int exponent = (1 << 14) - 1 + getExponent() - other.getExponent();
+	int exponent = (1 << 14) - 1 + getExponent() - other.getExponent();
 	//A helping hand - QInt
 	QInt a = convert();
 	QInt b = other.convert();
@@ -338,8 +356,10 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 	{
 		b = b << 1;
 		exponent++;
+		if (exponent >= upperBound) 
+			return Qfloat::infinity();
 	}
-	while ((a.getBit(112) == false) && (exponent > 0))
+	while ((a.getBit(112) == false) && (exponent > 0)) 
 	{
 		a = a << 1;
 		exponent--;
@@ -362,6 +382,12 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 		a = a << 1;
 		exponent--;		
 	}
+	//If result is unformal one
+	if (exponent < 0)
+	{
+		c = c >> (-exponent);
+		exponent = 0;
+	}
 	//Transfer data to Qfloat result
 	result.cell[3] = c.cell[3];
 	result.cell[2] = c.cell[2];
@@ -373,6 +399,7 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 
 	return result;
 }
+
 
 Qfloat Qfloat::operator << (const int &n)
 {
