@@ -310,25 +310,25 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 	QInt a = convert();
 	QInt b = other.convert();
 	QInt c;
-
-
-	unsigned int count = 0;
-
+	//Make it formal
+	while (b.getBit(112) == false) 
+	{
+		b = b << 1;
+		exponent++;
+	}
+	while ((a.getBit(112) == false) && (exponent > 0))
+	{
+		a = a << 1;
+		exponent--;
+	}
+	//
 	for (int i = 0; i < 113; i++)
 	{		
 		c = c << 1;
-		c = (c + (a / b)) >> count;
+		//calc
+		c = c + (a / b);
 		a = a % b;
 		a = a << 1;
-		//divine by unformal one
-		QInt limit = QInt("1");
-		limit = limit << (i + 1);
-		while (c >= limit)
-		{
-			c = c >> 1;
-			count++;
-			exponent++;
-		}
 	}
 	//Adjust exponent for more precise result
 	while ((exponent > 0) && (c.getBit(112) == false))
