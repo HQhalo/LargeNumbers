@@ -10,7 +10,7 @@
 				  */
 class Qfloat
 {
-private:
+public:
 	/* data */
 	unsigned int cell[4];
 
@@ -45,6 +45,9 @@ public:
 	static std::string binToDec(Qfloat x);
 	static std::string binToHex(Qfloat x);
 	static std::string decToHex(std::string x);
+	
+	static Qfloat infinity(); 
+	static Qfloat error();
 
 	Qfloat operator + (Qfloat const & other);
 	Qfloat operator - (Qfloat const & other);
@@ -63,6 +66,10 @@ public:
 
 	bool isZero() const;
 	void setZero();
+
+private:
+	bool isNan() const ;
+	bool isInf() const;
 };
 
 
