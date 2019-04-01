@@ -313,18 +313,28 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 
 
 	unsigned int count = 0;
+	QInt compare = QInt("1") << 113;
+	QInt storeBit;
+	QInt addon;
 
 	for (int i = 0; i < 113; i++)
 	{		
 		c = c << 1;
-		c = (c + (a / b)) >> count;
+		//Get storeBit first bit - just like a stack.pop()
+		if (storeBit.getBit(0)) addon.turnBitOn(0);
+		else addon.turnBitOff(0);
+		storeBit = storeBit >> 1;
+		//calc
+		c = (c + (a / b) + addon) >> count;
 		a = a % b;
 		a = a << 1;
-		//divine by unformal one
-		QInt limit = QInt("1");
-		limit = limit << (i + 1);
-		while (c >= limit)
+		//in case of divining by unformal one
+		while (c >= compare) //out of 112 bit
 		{
+			//Store first bit to storeBit - just like stack.push()
+			storeBit = storeBit << 1;
+			storeBit.setBit(0, c.getBit(0));
+			//shift left result and adjust exponent
 			c = c >> 1;
 			count++;
 			exponent++;
