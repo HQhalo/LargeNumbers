@@ -501,7 +501,7 @@ Qfloat Qfloat::decToBin(std::string str)
 		if (index == 112)
 		{
 			exponent++;
-			result << 1;
+			result = result >> 1;
 		} else index++;
 
 		result.setBit(index, integer.divineByTwo());
