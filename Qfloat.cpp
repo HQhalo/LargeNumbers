@@ -186,21 +186,36 @@ Qfloat Qfloat::operator * (Qfloat const & other) {
 			break;
 		ans = ans << 1;
 		Ex--;
+		if (Ex < 0) {
+			break;
+		}
 		if (Ex == 0){
 			ans = ans >> 1;
 			break;
 		}
 	}
 
-	
 	Qfloat res = Qfloat();
-	res.setExponent(Ex);
+
+	if (Ex > (1 << 15) - 2) {
+		Ex = (1 << 15) - 1;
+		ans = QInt();
+	}
+	
+
 	
 	res.setBit(127, this->getBit(127) != other.getBit(127));
+
+	if (Ex < 0) {
+		Ex = 0;
+		res.setBit(127, 0);
+		ans = QInt();
+	}
 
 	for (int i = 1; i <= 32 * 3 + 16; i++)
 		res.setBit(32 * 3 + 16 - i, ans.getBit(127 - 1- i));
 
+	res.setExponent(Ex);
 
 
 	return res;
@@ -488,6 +503,13 @@ Qfloat Qfloat::decToBin(std::string str)
 
 
  std::string Qfloat::binToDec(Qfloat x) {
+
+	 if (x.isNan())
+		 return "NaN";
+	 if (x.isInf())
+		 return "Inf";
+
+
 	 std::string s = "1";
 	 int sl = 50;
 	 for (int i = 0; i < sl; i++)
@@ -516,7 +538,7 @@ Qfloat Qfloat::decToBin(std::string str)
 	 int Ex = (int) (x.getExponent()) - ((1 << 14 )-1);
 	 if (x.getExponent() == 0)
 		 Ex++;
-	 std::cout << Ex << "\n";
+	 //std::cout << Ex << "\n";
 
 
 	 /*while (Ex - 5 > 0) {
@@ -585,7 +607,7 @@ Qfloat Qfloat::decToBin(std::string str)
 		 
 	 }
 
-	 std::cout << ans << "\n";
+	 //std::cout << ans << "\n";
 	 
 	 ans = ans + ".";
 	 for (int i = (int) b.data.size() - sl; i < (int) b.data.size(); i++) {
@@ -621,5 +643,21 @@ Qfloat Qfloat::decToBin(std::string str)
 
 
 
+ bool Qfloat::isNan() const {
+	 QInt a = convert();
+	 a.setBit(32 * 3 + 16, 0);
+
+	 if (getExponent() == (1 << 15) - 1 && !(a == QInt()))
+		 return true;
+	 return false;
+ }
+ bool Qfloat::isInf() const {
+	 QInt a = convert();
+	 a.setBit(32 * 3 + 16, 0);
+
+	 if (getExponent() == (1 << 15) - 1 && a == QInt())
+		 return true;
+	 return false;
+ }
 
 

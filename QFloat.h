@@ -63,6 +63,10 @@ public:
 
 	bool isZero() const;
 	void setZero();
+
+private:
+	bool isNan() const ;
+	bool isInf() const;
 };
 
 
