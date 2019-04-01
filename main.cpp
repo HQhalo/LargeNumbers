@@ -1,7 +1,27 @@
 #include"QInt.h"
 #include "QFloat.h"
+
+void TestRange() {
+
+	Qfloat A,B;
+	std::string a = "0000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000011";
+	std::string b = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010";
+	for (int i = 0; i < 127; i++)
+	{
+		A.setBit(127 - i, a[i] - '0');
+		std::cout << a[i] - '0';
+		B.setBit(127 - i, b[i] - '0');
+	}
+
+	std::cout << Qfloat::binToDec(A) << "\n";
+	std::cout << Qfloat::binToDec(B) << "\n";
+	std::cout << Qfloat::binToDec(A + B) << "\n";
+	system("pause");
+}
 int main(int argc, char const *argv[])
 {
+	TestRange();
+	return 0;
     /* code */
 	/*std::string s;
 	getline(std::cin,s);
@@ -10,7 +30,7 @@ int main(int argc, char const *argv[])
 	*/
 	
 
-	std::string s;
+	//std::string s;
 	// getline(std::cin,s);
 	
 	// std::cout << QInt::getToken(s);
