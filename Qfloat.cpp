@@ -345,6 +345,7 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 	Qfloat result;
 	//Divine by Zero
 	if (other.isZero()) return Qfloat::error();
+	if (isZero()) return result;
 	//
 	int upperBound = (1 << 15) - 1;
 	//Calc exponent
