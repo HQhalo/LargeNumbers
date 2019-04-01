@@ -316,7 +316,7 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 		b = b << 1;
 		exponent++;
 	}
-	while (a.getBit(112) == false) 
+	while ((a.getBit(112) == false) && (exponent > 0))
 	{
 		a = a << 1;
 		exponent--;
