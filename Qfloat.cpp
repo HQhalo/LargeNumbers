@@ -1,13 +1,13 @@
 #include "QFloat.h"
 
-Qfloat::Qfloat infinity()
+Qfloat Qfloat::infinity()
 {
 	Qfloat result;
 	result.cell[0] = ((1 << 15) - 1) << 16;
 	return result;	
 }
 
-Qfloat::Qfloat error()
+Qfloat Qfloat::error()
 {
 	Qfloat result;
 	result.cell[0] = ((1 << 15) - 1) << 16;
