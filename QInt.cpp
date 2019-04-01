@@ -507,7 +507,12 @@ QInt& QInt::operator = (const long long& other)
 QInt QInt::operator << (const int &n)
 {
 
-    QInt temp = *this;
+    QInt temp;
+	if (n >= 128)
+	{
+		return temp;
+	}
+	temp = *this;
     
     for( unsigned char i = 127 ; i >= n ; i--)
     {
@@ -527,7 +532,12 @@ QInt QInt::operator << (const int &n)
 QInt QInt::operator >> (const int &n)
 {
 
-    QInt temp= *this;
+    QInt temp;
+	if (n >= 128)
+	{
+		return temp;
+	}
+	temp = *this;
     for( unsigned char i = 0 ; i < 128-n ; i++)
     {
         if(temp.getBit(i+n))

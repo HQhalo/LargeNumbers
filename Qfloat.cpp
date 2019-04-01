@@ -232,6 +232,15 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 	{
 		return *this;
 	}
+	if(exponent1 == 0)
+	{
+		exponent1 = 1;		
+	}
+
+	if(exponent2 ==0 )
+	{
+		exponent2 = 1;	
+	}
     if(exponent1 > exponent2)
     {
         int shift = exponent1- exponent2;
@@ -260,11 +269,16 @@ Qfloat Qfloat::operator + (Qfloat const & other)
         numberRe= number1 + number2;
         sign = sign1;
 		
+		
         if(numberRe.getBit(113) == true)
         {
             numberRe = numberRe >> 1;
             exponent ++ ;
         }
+		else if(exponent == 1 && numberRe.getBit(112) == false )
+		{
+			exponent = 0;
+		}
 		
     }
     else
@@ -273,6 +287,11 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 
 		sign = (number1 > number2) ? sign1 : sign2;
 
+		if(exponent == 1 && numberRe.getBit(112) == false)
+		{
+			exponent = 0;
+		}
+		else {
 		for (int i = 112; i >= 0; i--)
 		{
 			if (numberRe.getBit(112) == true)
@@ -280,7 +299,7 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 			numberRe = numberRe << 1;
 			exponent--;
 		}
-		
+		}
     }
 
 	if(numberRe == zero )
@@ -288,6 +307,11 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 		exponent = 0;
 		sign = 0;
 	}
+	else 
+	{
+
+	}
+
 	//numberRe.PrintQInt();
 
     re.setBit(127,sign);
@@ -361,7 +385,12 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 
 Qfloat Qfloat::operator << (const int &n)
 {
-    Qfloat temp = *this;
+    Qfloat temp;
+	if (n >= 128)
+	{
+		return temp;
+	}
+	temp = *this;
     
     for( unsigned char i = 127 ; i >= n ; i--)
     {
@@ -380,7 +409,12 @@ Qfloat Qfloat::operator << (const int &n)
 
 Qfloat Qfloat::operator >> (const int &n)
 {
-    Qfloat temp= *this;
+   Qfloat temp;
+	if (n >= 128)
+	{
+		return temp;
+	}
+	temp = *this;
     for( unsigned char i = 0 ; i < 128-n ; i++)
     {
         if(temp.getBit(i+n))
