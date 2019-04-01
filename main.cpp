@@ -10,32 +10,32 @@ template
 void TestRange() {
 
 	Qfloat A,B;
-	std::string a = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-	std::string b = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+	std::string a = "00000000000000000000000000000000000000001001001000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+	std::string b = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010";
 	for (int i = 0; i < 128; i++)
 	{
 		A.setBit(127 - i, a[i] - '0');
 		B.setBit(127 - i, b[i] - '0');
 	}
-	A.setExponent((1 << 14) -1 + 1000 );
+	A.setExponent((1 << 15) -2 );
 
 	
-	B.setExponent((1 << 14) - 1 - 1000);
-	//std::string s = Qfloat::binToDec(A);
-	//PrintBit(A);
+	B.setExponent(0);
+	std::string s = Qfloat::binToDec(A);
+	PrintBit(A);
 	//std::cin >> s;
 	//A = Qfloat::decToBin(s);
 	/*std::cin >> s;
 	B = Qfloat::decToBin(s);
 	*/
 
-	std::cout << Qfloat::binToDec(A) << "\n";
-	std::cout << Qfloat::binToDec(B) << "\n";
-	std::cout << Qfloat::binToDec(B * A) << "\n";
+	//std::cout << Qfloat::binToDec(A) << "\n";
+	//std::cout << Qfloat::binToDec(B) << "\n";
+	//std::cout << Qfloat::binToDec(B / A) << "\n";
 	//PrintBit(B);
 	//PrintBit(A);
 
-	//A = B * A;
+	//A = B / A;
 	//PrintBit(A);
 
 	system("pause");
