@@ -359,7 +359,7 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 		if (exponent >= upperBound) 
 			return Qfloat::infinity();
 	}
-	while ((a.getBit(112) == false) && (exponent > 0)) 
+	while (a.getBit(112) == false) 
 	{
 		a = a << 1;
 		exponent--;
