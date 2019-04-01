@@ -10,7 +10,7 @@ int main(int argc, char const *argv[])
 	*/
 	
 
-	std::string s;
+	//std::string s;
 	// getline(std::cin,s);
 	
 	// std::cout << QInt::getToken(s);
@@ -53,7 +53,7 @@ int main(int argc, char const *argv[])
 
 
 	std::cout << "ket qua phep *\n";
-	std::cout <<Qfloat::binToDec(A * B);
+	std::cout <<Qfloat::binToDec(A / B);
 
 	// std::cout << "ket qua phep *\n";
 	// std::cout <<Qfloat::binToDec(A + B);
