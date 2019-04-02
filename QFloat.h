@@ -27,7 +27,7 @@ public:
 	static void scanQfloat(Qfloat &x);
 
 	//in so dang nhi phan
-	static void PrintQfloat(Qfloat x);
+	std::string PrintQfloat(Qfloat x);
 
 
 	const unsigned int *  converT() const;

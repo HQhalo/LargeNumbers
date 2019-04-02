@@ -1,5 +1,5 @@
 #include "QFloat.h"
-
+#include <sstream>
 Qfloat Qfloat::infinity()
 {
 	Qfloat result;
@@ -129,7 +129,12 @@ void Qfloat::scanQfloat(Qfloat &QF) {
 	QF.setBit(127, isNegative);
 	
 }
-void Qfloat::PrintQfloat(Qfloat x) {
+std::string Qfloat::PrintQfloat(Qfloat x) {
+	if (isNan())
+		return "NaN";
+	if (isInf())
+		return "Inf";
+
 	int Ex = x.getExponent();
 	std::string persent = "";
 
@@ -147,7 +152,9 @@ void Qfloat::PrintQfloat(Qfloat x) {
 	while (persent[persent.size() - 1] == '0')
 		persent.erase(persent.size() - 1, 1);
 
-	std::cout << persent << "x2^" << Ex - ((1<<14)-1);
+	std::stringstream a;
+	a  << persent << "x2^" << Ex - ((1 << 14) - 1);
+	return a.str();
 }
 
 Qfloat Qfloat::operator * (Qfloat const & other) {
