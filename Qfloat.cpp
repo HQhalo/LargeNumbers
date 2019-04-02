@@ -70,9 +70,9 @@ void Qfloat::setExponent(unsigned int Ex) {
 
 
 
-void Qfloat::scanQfloat(Qfloat &QF) {
-	std::string s;
-	std::cin >> s;
+Qfloat Qfloat::scanQfloat(std::string s) {
+	
+	Qfloat QF;
 	bool isNegative = false;
 	if (s[0] == '-')
 	{
@@ -127,6 +127,8 @@ void Qfloat::scanQfloat(Qfloat &QF) {
 	//std::cout << "???";
 	QF.setExponent(Ex );
 	QF.setBit(127, isNegative);
+
+	return QF;
 	
 }
 std::string Qfloat::PrintQfloat(Qfloat x) {
@@ -732,3 +734,64 @@ Qfloat Qfloat::decToBin(std::string str)
  }
 
 
+std::string Qfloat::Token(std::string Tokens)
+{
+	std::vector<std::string> Token;
+
+	std::string tmp = "";
+	for (int i = 0; i < Tokens.size(); i++) {
+		if (Tokens[i] == ' ')
+			continue;
+
+		tmp += Tokens[i];
+
+		if (i == Tokens.size() - 1 || Tokens[i + 1] == ' ') {
+			Token.push_back(tmp);
+			tmp = "";
+		}
+	}
+	if (Token.size() == 4) {
+		Qfloat a;
+		Qfloat b;
+
+		if (Token[0] == "2") {
+			a = Qfloat::scanQfloat(Token[1]);
+			b = Qfloat::scanQfloat(Token[3]);
+
+		}
+		if (Token[0] == "10") {
+
+			a = Qfloat::decToBin(Token[1]);
+			b = Qfloat::decToBin(Token[3]);
+		}
+		if (Token[0] == "16") {
+			//a = hexToBin(Token[1]);
+			//b = hexToBin(Token[3]);
+		}
+
+		if (Token[2] == "+") {
+			a = a + b;
+		}
+		if (Token[2] == "-") {
+			a = a - b;
+		}
+		if (Token[2] == "*") {
+			a = a * b;
+		}
+		if (Token[2] == "/") {
+			a = a / b;
+		}
+		//return a.PrintQfloat(a);
+		
+		if (Token[0] == "2") {
+			return a.PrintQfloat(a);
+		}
+		if (Token[0] == "10") {
+			return Qfloat::binToDec(a);
+		}
+		if (Token[0] == "16") {
+			//return Qfloat::binToHex(a);
+		}
+	}
+	return "Error!";
+}

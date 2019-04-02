@@ -1,5 +1,8 @@
 #include"QInt.h"
 #include "QFloat.h"
+#include <fstream>
+using namespace std;
+
 
 template
 <class T> void PrintBit(T a) {
@@ -23,29 +26,49 @@ void TestRange() {
 	std::string s = Qfloat::binToDec(B);
 	PrintBit(B);
 	std::cout << s;
-	//std::cin >> s;
-	//A = Qfloat::decToBin(s);
-	/*std::cin >> s;
-	B = Qfloat::decToBin(s);
-	*/
-
-	//std::cout << Qfloat::binToDec(A) << "\n";
-	//std::cout << Qfloat::binToDec(B) << "\n";
-	//std::cout << Qfloat::binToDec(B / A) << "\n";
-	//PrintBit(B);
-	//PrintBit(A);
-
-	//A = B / A;
-	//PrintBit(A);
-
-	 PrintBit(temp); 
 	
 
 }
+
+
 int main(int argc, char const *argv[])
 {
-	TestRange();
-	//TestQInt();
+	fstream input ;
+	ofstream output;
+
+	if(argc == 4)
+	{
+		string temp="";
+		
+		input.open(argv[1]);
+		output.open(argv[2]);
+		if (input.is_open())
+  		{
+			
+			if(argv[3][0] == '1')
+			{
+
+				while(getline(input,temp))
+				{
+					cout<<temp;
+					output<< QInt::getToken(temp)<<"\n";
+				}
+				
+			}
+			else if(argv[3][0] =='2')
+			{
+				while(getline(input,temp))
+				{
+					output<< Qfloat::Token(temp);
+				}
+			}
+		
+
+		}
+	}
+
+	input.close();
+	output.close();
 	return 0;
     
 }

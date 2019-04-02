@@ -649,7 +649,18 @@ std::string QInt::getToken(std::string Tokens) {
 			a = a.ror(stoi(Token[3]));
 		}
 		if (Token[0] == "2") {
-			return binToDec(a);
+			std::string re = "";
+			bool check = false;
+			int i= 127;
+			while( a.getBit(i) == 0 )
+			{
+				i--;
+			}
+			for (; i >= 0; i--)
+			{
+				re += ('0' + a.getBit(i));
+			}
+			return re;
 		}
 		if (Token[0] == "10") {
 			return binToDec(a);
@@ -680,8 +691,19 @@ std::string QInt::getToken(std::string Tokens) {
 
 			a = ~a;
 
-			if (Token[0] == "2") {// chua co ham chuyen qua he 2
-				return binToDec(a);
+			if (Token[0] == "2") {
+				std::string re = "";
+				bool check = false;
+				int i= 127;
+				while( a.getBit(i) == 0 )
+				{
+					i--;
+				}
+				for (; i >= 0; i--)
+				{
+					re += ('0' + a.getBit(i));
+				}
+				return re;
 			}
 			if (Token[0] == "10") { 
 				return binToDec(a);

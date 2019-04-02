@@ -24,8 +24,8 @@ public:
 	void getRidOfReal(BigNum &a, const unsigned int &count);
 public:
 	//nhap so dang nhi phan
-	static void scanQfloat(Qfloat &x);
-
+	static Qfloat scanQfloat(std::string str);
+	static std::string Token(std::string token);
 	//in so dang nhi phan
 	std::string PrintQfloat(Qfloat x);
 
