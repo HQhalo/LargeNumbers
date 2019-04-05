@@ -140,8 +140,10 @@ std::string Qfloat::PrintQfloat(Qfloat x) {
 	int Ex = x.getExponent();
 	std::string persent = "";
 
-	if (Ex == 0)
+	if (Ex == 0) {
 		persent = "0.";
+		Ex++;
+	}
 	else
 		persent = "1.";
 
