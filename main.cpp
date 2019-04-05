@@ -77,10 +77,16 @@ void TestQInt() {
 
 	system("pause");
 }
+void TestToken() {
+	std::string s = "10 1 + 210624583337114373395836055367340864637790190801098222508621955071";
+	std::cout <<QInt::getToken(s);
+	system("pause");
+}
 int main(int argc, char const *argv[])
 {
-	TestRange();
+	//TestRange();
 	//TestQInt();
+	TestToken();
 	return 0;
     /* code */
 	/*std::string s;
