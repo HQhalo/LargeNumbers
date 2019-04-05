@@ -566,6 +566,7 @@ Qfloat Qfloat::decToBin(std::string str)
 		result.pushOut(real, exponent); //"result." just be formal
 		for (int i = 0; i < 113; i++) result.setBit(i, real.divineByTwo());	
 	}
+	else exponent += 112;
 	//else the integer is too large, so sacrifice the preciseness
 
 	result.setExponent(exponent);
