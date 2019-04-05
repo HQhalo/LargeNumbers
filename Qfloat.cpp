@@ -492,8 +492,10 @@ void Qfloat::pushOut(BigNum &a, unsigned int &exponent)
 		a.doubleValue();
 		exponent--;
 	}
-
-	for (int i = 0; i < 112; i++)
+	
+	int n = 112 - (exponent == 0);
+	
+	for (int i = 0; i < n; i++)
 		a.doubleValue();
 
 	a.data.erase(a.data.length() - length, length);
