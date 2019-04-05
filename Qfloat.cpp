@@ -1,5 +1,5 @@
 #include "QFloat.h"
-
+#include <sstream>
 Qfloat Qfloat::infinity()
 {
 	Qfloat result;
@@ -70,9 +70,9 @@ void Qfloat::setExponent(unsigned int Ex) {
 
 
 
-void Qfloat::scanQfloat(Qfloat &QF) {
-	std::string s;
-	std::cin >> s;
+Qfloat Qfloat::scanQfloat(std::string s) {
+	
+	Qfloat QF;
 	bool isNegative = false;
 	if (s[0] == '-')
 	{
@@ -127,9 +127,16 @@ void Qfloat::scanQfloat(Qfloat &QF) {
 	//std::cout << "???";
 	QF.setExponent(Ex );
 	QF.setBit(127, isNegative);
+
+	return QF;
 	
 }
-void Qfloat::PrintQfloat(Qfloat x) {
+std::string Qfloat::PrintQfloat(Qfloat x) {
+	if (isNan())
+		return "NaN";
+	if (isInf())
+		return "Inf";
+
 	int Ex = x.getExponent();
 	std::string persent = "";
 
@@ -147,7 +154,9 @@ void Qfloat::PrintQfloat(Qfloat x) {
 	while (persent[persent.size() - 1] == '0')
 		persent.erase(persent.size() - 1, 1);
 
-	std::cout << persent << "x2^" << Ex - ((1<<14)-1);
+	std::stringstream a;
+	a  << persent << "x2^" << Ex - ((1 << 14) - 1);
+	return a.str();
 }
 
 Qfloat Qfloat::operator * (Qfloat const & other) {
@@ -263,6 +272,15 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 	{
 		return *this;
 	}
+	if(exponent1 == 0)
+	{
+		exponent1 = 1;		
+	}
+
+	if(exponent2 ==0 )
+	{
+		exponent2 = 1;	
+	}
     if(exponent1 > exponent2)
     {
         int shift = exponent1- exponent2;
@@ -291,11 +309,16 @@ Qfloat Qfloat::operator + (Qfloat const & other)
         numberRe= number1 + number2;
         sign = sign1;
 		
+		
         if(numberRe.getBit(113) == true)
         {
             numberRe = numberRe >> 1;
             exponent ++ ;
         }
+		else if(exponent == 1 && numberRe.getBit(112) == false )
+		{
+			exponent = 0;
+		}
 		
     }
     else
@@ -304,6 +327,11 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 
 		sign = (number1 > number2) ? sign1 : sign2;
 
+		if(exponent == 1 && numberRe.getBit(112) == false)
+		{
+			exponent = 0;
+		}
+		else {
 		for (int i = 112; i >= 0; i--)
 		{
 			if (numberRe.getBit(112) == true)
@@ -311,7 +339,7 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 			numberRe = numberRe << 1;
 			exponent--;
 		}
-		
+		}
     }
 
 	if(numberRe == zero )
@@ -319,6 +347,11 @@ Qfloat Qfloat::operator + (Qfloat const & other)
 		exponent = 0;
 		sign = 0;
 	}
+	else 
+	{
+
+	}
+
 	//numberRe.PrintQInt();
 
     re.setBit(127,sign);
@@ -406,7 +439,12 @@ Qfloat Qfloat::operator / (const Qfloat &other)
 
 Qfloat Qfloat::operator << (const int &n)
 {
-    Qfloat temp = *this;
+    Qfloat temp;
+	if (n >= 128)
+	{
+		return temp;
+	}
+	temp = *this;
     
     for( unsigned char i = 127 ; i >= n ; i--)
     {
@@ -425,7 +463,12 @@ Qfloat Qfloat::operator << (const int &n)
 
 Qfloat Qfloat::operator >> (const int &n)
 {
-    Qfloat temp= *this;
+   Qfloat temp;
+	if (n >= 128)
+	{
+		return temp;
+	}
+	temp = *this;
     for( unsigned char i = 0 ; i < 128-n ; i++)
     {
         if(temp.getBit(i+n))
@@ -691,3 +734,64 @@ Qfloat Qfloat::decToBin(std::string str)
  }
 
 
+std::string Qfloat::Token(std::string Tokens)
+{
+	std::vector<std::string> Token;
+
+	std::string tmp = "";
+	for (int i = 0; i < Tokens.size(); i++) {
+		if (Tokens[i] == ' ')
+			continue;
+
+		tmp += Tokens[i];
+
+		if (i == Tokens.size() - 1 || Tokens[i + 1] == ' ') {
+			Token.push_back(tmp);
+			tmp = "";
+		}
+	}
+	if (Token.size() == 4) {
+		Qfloat a;
+		Qfloat b;
+
+		if (Token[0] == "2") {
+			a = Qfloat::scanQfloat(Token[1]);
+			b = Qfloat::scanQfloat(Token[3]);
+
+		}
+		if (Token[0] == "10") {
+
+			a = Qfloat::decToBin(Token[1]);
+			b = Qfloat::decToBin(Token[3]);
+		}
+		if (Token[0] == "16") {
+			//a = hexToBin(Token[1]);
+			//b = hexToBin(Token[3]);
+		}
+
+		if (Token[2] == "+") {
+			a = a + b;
+		}
+		if (Token[2] == "-") {
+			a = a - b;
+		}
+		if (Token[2] == "*") {
+			a = a * b;
+		}
+		if (Token[2] == "/") {
+			a = a / b;
+		}
+		//return a.PrintQfloat(a);
+		
+		if (Token[0] == "2") {
+			return a.PrintQfloat(a);
+		}
+		if (Token[0] == "10") {
+			return Qfloat::binToDec(a);
+		}
+		if (Token[0] == "16") {
+			//return Qfloat::binToHex(a);
+		}
+	}
+	return "Error!";
+}

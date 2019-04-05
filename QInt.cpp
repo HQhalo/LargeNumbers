@@ -507,7 +507,12 @@ QInt& QInt::operator = (const long long& other)
 QInt QInt::operator << (const int &n)
 {
 
-    QInt temp = *this;
+    QInt temp;
+	if (n >= 128)
+	{
+		return temp;
+	}
+	temp = *this;
     
     for( unsigned char i = 127 ; i >= n ; i--)
     {
@@ -527,7 +532,12 @@ QInt QInt::operator << (const int &n)
 QInt QInt::operator >> (const int &n)
 {
 
-    QInt temp= *this;
+    QInt temp;
+	if (n >= 128)
+	{
+		return temp;
+	}
+	temp = *this;
     for( unsigned char i = 0 ; i < 128-n ; i++)
     {
         if(temp.getBit(i+n))
@@ -574,8 +584,8 @@ std::string QInt::getToken(std::string Tokens) {
 		QInt b;
 
 		if (Token[0] == "2") {
-
-
+			a = binToQInt(Token[1]);
+			b = binToQInt(Token[3]);
 
 		}
 		if (Token[0] == "10") {
@@ -584,9 +594,8 @@ std::string QInt::getToken(std::string Tokens) {
 			b = decToBin(Token[3]);
 		}
 		if (Token[0] == "16") {
-
-
-
+			a = hexToBin(Token[1]);
+			b = hexToBin(Token[3]);
 		}
 
 		if (Token[2] == "+") {
@@ -625,20 +634,39 @@ std::string QInt::getToken(std::string Tokens) {
 		if (Token[2] == "<=") {
 			return a <= b ? "True" : "False";
 		}
-
-
+		if (Token[2] == "<<")
+		{
+			a = a << stoi(Token[3]);
+		}
+		if (Token[2] == ">>")
+		{
+			a = a >> stoi(Token[3]);
+		}if (Token[2] == "rol")
+		{
+			a = a.rol(stoi(Token[3]));
+		}if (Token[2] == "ror")
+		{
+			a = a.ror(stoi(Token[3]));
+		}
 		if (Token[0] == "2") {
-
-
-
+			std::string re = "";
+			bool check = false;
+			int i= 127;
+			while( a.getBit(i) == 0 )
+			{
+				i--;
+			}
+			for (; i >= 0; i--)
+			{
+				re += ('0' + a.getBit(i));
+			}
+			return re;
 		}
 		if (Token[0] == "10") {
 			return binToDec(a);
 		}
 		if (Token[0] == "16") {
-
-
-
+			return binToHex(a);
 		}
 
 
@@ -648,6 +676,42 @@ std::string QInt::getToken(std::string Tokens) {
 
 	if( Token.size() == 3 )
 	{
+		if (Token[2] == "~")
+		{
+			QInt a;
+			if (Token[0] == "2") {
+				a = binToQInt(Token[1]);
+			}
+			if (Token[0] == "10") {
+				a = decToBin(Token[1]);
+			}
+			if (Token[0] == "16") {
+				a = hexToBin(Token[1]);
+			}
+
+			a = ~a;
+
+			if (Token[0] == "2") {
+				std::string re = "";
+				bool check = false;
+				int i= 127;
+				while( a.getBit(i) == 0 )
+				{
+					i--;
+				}
+				for (; i >= 0; i--)
+				{
+					re += ('0' + a.getBit(i));
+				}
+				return re;
+			}
+			if (Token[0] == "10") { 
+				return binToDec(a);
+			}
+			if (Token[0] == "16") {
+				return binToHex(a);
+			}
+		}
 		if(Token[0] == "2")
 		{
 			if(Token[1] == "10")
@@ -713,7 +777,7 @@ std::string QInt::getToken(std::string Tokens) {
 		}
 	}
 
-	return "chua co kq";
+	return "Error!";
 }
 
 
