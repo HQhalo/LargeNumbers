@@ -793,5 +793,24 @@ std::string Qfloat::Token(std::string Tokens)
 			//return Qfloat::binToHex(a);
 		}
 	}
+	if(Token.size() == 3)
+	{
+		Qfloat a;
+		if (Token[0] == "2") {
+			a = Qfloat::scanQfloat(Token[2]);
+
+		}
+		if (Token[0] == "10") {
+
+			a = Qfloat::decToBin(Token[2]);
+		}
+
+		if (Token[1] == "2") {
+			return a.PrintQfloat(a);
+		}
+		if (Token[1] == "10") {
+			return Qfloat::binToDec(a);
+		}
+	}
 	return "Error!";
 }

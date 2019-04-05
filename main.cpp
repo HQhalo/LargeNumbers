@@ -60,6 +60,8 @@ int main(int argc, char const *argv[])
 				while(getline(input,temp))
 				{
 					output<< Qfloat::Token(temp);
+					output<< QInt::getToken(temp)<<"\n";
+
 				}
 			}
 		
