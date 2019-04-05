@@ -13,24 +13,22 @@ template
 void TestRange() {
 
 	Qfloat A,B;
-	std::string a = "";
+	std::string a = "0.0000000000000000000000000000007888609052210118054117285652827862296732064351090230047702789306640625";
 	std::string b = "01111111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010";
 	for (int i = 0; i < 128; i++)
 	{
-		//A.setBit(127 - i, 0);
+		A.setBit(127 - i, 0);
 		B.setBit(127 - i, b[i] - '0');
 	}
 	
-	//A.setExponent((1 << 15) -2 );
-	//A = Qfloat::decToBin(a);
-
 	std::string s;
 	//std::cin >> s;
 	B.setExponent(0);
-	A = Qfloat::decToBin("2");
-	std::cout << Qfloat::binToDec(B / A);
+	A = Qfloat::decToBin(a);
+	std::cout << A.PrintQfloat(A);
+	//std::cout << Qfloat::binToDec(B / A);
 	//A = Qfloat::decToBin(s);
-	PrintBit(A);
+	//PrintBit(A);
 	//std::string s = Qfloat::binToDec(A);
 	//PrintBit(A);
 	//std::cin >> s;
@@ -56,8 +54,8 @@ void TestToken() {
 
 int main(int argc, char const *argv[])
 {
-	//TestRange();
-	//return 0 ;
+	TestRange();
+	return 0 ;
 	fstream input ;
 	ofstream output;
 
